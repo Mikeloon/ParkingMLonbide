@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/menuProfile"
+        android:icon="@drawable/img_menu_profile"
+        android:title="Perfil" />
+
+    <item android:id="@+id/menuParking"
+        android:icon="@drawable/baseline_local_parking_24"
+        android:title="Ver parking" />
+
+    <item android:id="@+id/menuReserva"
+        android:icon="@drawable/baseline_book_24"
+        android:title="Realizar reserva" />
+
+    <item android:id="@+id/Salir"
+        android:icon="@drawable/baseline_exit_to_app_24"
+        android:title="Salir" />
+</menu>

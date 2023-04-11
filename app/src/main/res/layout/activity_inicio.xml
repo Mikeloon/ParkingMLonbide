@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context="com.lksnext.parkingmlonbide.Inicio">
+
+    <TextView
+        android:layout_width= "match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bienvenida"
+        android:text="Bienvenid@ a nuestra aplicación"
+        android:textColor="@color/white"
+        android:textSize="35dp"
+        android:textStyle = "bold"
+        android:layout_margin="50dp"
+        android:gravity="center"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/registrarsebtton"
+        android:layout_below="@id/bienvenida"
+        android:text="Registrarse"
+        android:backgroundTint="@color/design_default_color_secondary"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="80dp"
+        />
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/logearsesbtton"
+        android:layout_below="@id/registrarsebtton"
+        android:text="Iniciar sesión"
+        android:backgroundTint="@color/design_default_color_secondary"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        />
+
+</RelativeLayout>

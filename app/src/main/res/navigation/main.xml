@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    app:startDestination="@id/menuProfile">
+
+    <fragment
+        android:id="@+id/menuProfile"
+        android:name="com.lksnext.parkingmlonbide.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/menuParking"
+        android:name="com.lksnext.parkingmlonbide.ParkingFragment"
+        android:label="fragment_parking"
+        tools:layout="@layout/fragment_parking" />
+    <fragment
+        android:id="@+id/menuReserva"
+        android:name="com.lksnext.parkingmlonbide.BookingFragment"
+        android:label="fragment_booking"
+        tools:layout="@layout/fragment_booking" />
+</navigation>
