@@ -7,17 +7,17 @@
 
     <fragment
         android:id="@+id/menuProfile"
-        android:name="com.lksnext.parkingmlonbide.ProfileFragment"
+        android:name="com.lksnext.parkingmlonbide.NavFragments.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/menuParking"
-        android:name="com.lksnext.parkingmlonbide.ParkingFragment"
+        android:name="com.lksnext.parkingmlonbide.NavFragments.ParkingFragment"
         android:label="fragment_parking"
         tools:layout="@layout/fragment_parking" />
     <fragment
         android:id="@+id/menuReserva"
-        android:name="com.lksnext.parkingmlonbide.BookingFragment"
+        android:name="com.lksnext.parkingmlonbide.NavFragments.BookingFragment"
         android:label="fragment_booking"
         tools:layout="@layout/fragment_booking" />
 </navigation>

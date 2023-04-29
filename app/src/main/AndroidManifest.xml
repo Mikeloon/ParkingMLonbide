@@ -12,7 +12,7 @@
         android:theme="@style/Theme.ParkingMLonbide"
         tools:targetApi="31">
         <activity
-            android:name="com.lksnext.parkingmlonbide.Inicio"
+            android:name="com.lksnext.parkingmlonbide.RegisterLogin.Inicio"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,13 +21,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.lksnext.parkingmlonbide.HomePage"
+            android:name="com.lksnext.parkingmlonbide.NavFragments.HomePage"
             android:exported="false" />
         <activity
-            android:name="com.lksnext.parkingmlonbide.RegisterActivity"
+            android:name="com.lksnext.parkingmlonbide.RegisterLogin.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".RegisterLogin.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

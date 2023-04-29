@@ -1,4 +1,4 @@
-package com.lksnext.parkingmlonbide;
+package com.lksnext.parkingmlonbide.DataClasses;
 
 import java.util.ArrayList;
 

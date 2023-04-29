@@ -1,4 +1,4 @@
-package com.lksnext.parkingmlonbide;
+package com.lksnext.parkingmlonbide.NavFragments;
 
 import android.os.Bundle;
 
@@ -8,6 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.lksnext.parkingmlonbide.DataClasses.Reserva;
+import com.lksnext.parkingmlonbide.DataClasses.User;
+import com.lksnext.parkingmlonbide.R;
 
 
 public class ProfileFragment extends Fragment {
@@ -21,7 +25,6 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
-        User u = (User) getActivity().getIntent().getParcelableExtra("User");
         TextView userTxt = (TextView) v.findViewById(R.id.txtWelcome);
         TextView mailTxt = (TextView) v.findViewById(R.id.Correotxt);
         TextView dateTxt = (TextView) v.findViewById(R.id.fechaTxt);
@@ -32,7 +35,7 @@ public class ProfileFragment extends Fragment {
         dateTxt.setText(User.birthdate);
         String reservas = "";
         for (Reserva r : User.misReservas){
-            reservas = reservas + r.getIdPlaza();
+            reservas = reservas;
         }
         reservastxt.setText(reservas);
         return v;

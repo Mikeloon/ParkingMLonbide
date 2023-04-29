@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".BookingFragment">
+    tools:context=".NavFragments.BookingFragment">
 
     <TextView
         android:id="@+id/Title"
@@ -15,6 +15,7 @@
         android:layout_marginStart="16dp"
         android:text="Realizar reserva"
         android:textColor="@color/white"
+        android:textColorHint="#FFFFFF"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -23,26 +24,112 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.022" />
 
-    <ImageButton
-        android:id="@+id/Plaza1"
-        android:layout_width="63dp"
-        android:layout_height="63dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="20dp"
-        android:contentDescription="Plaza1"
-        android:src="@drawable/baseline_directions_car_24"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Seleccionar" />
 
     <TextView
         android:id="@+id/Seleccionar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="36dp"
-        android:text="Selecciona una plaza:"
+        android:layout_marginStart="92dp"
+        android:layout_marginTop="44dp"
+        android:text="Seleccione la fecha para la reserva:"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Title" />
+
+    <DatePicker
+        android:id="@+id/datePicker"
+        android:layout_width="258dp"
+        android:layout_height="174dp"
+        android:layout_marginTop="18dp"
+        android:calendarTextColor="#FFFFFF"
+        android:calendarViewShown="false"
+        android:datePickerMode="spinner"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Seleccionar"
+        app:layout_constraintVertical_bias="0.016" />
+
+    <TextView
+        android:id="@+id/textViewHoras"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seleccione la hora de inicio y fin:"
+        android:textColor="@color/white"
+        android:textColorHint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/datePicker"
+        app:layout_constraintVertical_bias="0.081" />
+
+    <TimePicker
+        android:id="@+id/startTimePicker"
+        android:layout_width="139dp"
+        android:layout_height="84dp"
+        android:layout_marginBottom="120dp"
+        android:layout_weight="1"
+        android:timePickerMode="spinner"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/endTimePicker"
+        app:layout_constraintHorizontal_bias="0.726"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewHoras"
+        app:layout_constraintVertical_bias="0.164" />
+
+    <TimePicker
+        android:id="@+id/endTimePicker"
+        android:layout_width="139dp"
+        android:layout_height="84dp"
+        android:layout_marginEnd="60dp"
+        android:layout_weight="1"
+        android:timePickerMode="spinner"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewHoras"
+        app:layout_constraintVertical_bias="0.1" />
+
+    <TextView
+        android:id="@+id/tipolabl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seleccione el tipo de plaza:"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/startTimePicker"
+        app:layout_constraintVertical_bias="0.082" />
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="204dp"
+        android:layout_height="104dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tipolabl"
+        app:layout_constraintVertical_bias="0.169">
+
+        <LinearLayout
+            android:id="@+id/linearlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+    <Button
+        android:id="@+id/confirmbtton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirmar reserva"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

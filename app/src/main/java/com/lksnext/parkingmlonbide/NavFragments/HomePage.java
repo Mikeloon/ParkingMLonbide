@@ -1,4 +1,4 @@
-package com.lksnext.parkingmlonbide;
+package com.lksnext.parkingmlonbide.NavFragments;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -12,8 +12,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
+import com.lksnext.parkingmlonbide.DataClasses.User;
+import com.lksnext.parkingmlonbide.RegisterLogin.MainActivity;
+import com.lksnext.parkingmlonbide.R;
 
 public class HomePage extends AppCompatActivity {
 
@@ -41,7 +43,7 @@ public class HomePage extends AppCompatActivity {
     }
 
     public void openLogInActivity(){
-        Intent gotoLogin = new Intent(HomePage.this,MainActivity.class);
+        Intent gotoLogin = new Intent(HomePage.this, MainActivity.class);
         startActivity(gotoLogin);
     }
 }

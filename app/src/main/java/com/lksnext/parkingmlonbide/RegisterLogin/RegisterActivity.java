@@ -1,4 +1,4 @@
-package com.lksnext.parkingmlonbide;
+package com.lksnext.parkingmlonbide.RegisterLogin;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,8 +9,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
-
-import org.w3c.dom.Text;
+import com.lksnext.parkingmlonbide.DataClasses.User;
+import com.lksnext.parkingmlonbide.R;
 
 public class RegisterActivity extends AppCompatActivity {
 
