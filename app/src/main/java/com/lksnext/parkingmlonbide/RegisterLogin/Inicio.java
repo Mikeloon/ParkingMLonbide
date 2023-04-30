@@ -16,10 +16,10 @@ public class Inicio extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        TipoEstacionamiento e1 = TipoEstacionamiento.NORMAL;
-        TipoEstacionamiento e2 = TipoEstacionamiento.CARGADORELEC;
-        TipoEstacionamiento e3 = TipoEstacionamiento.MINUSVALIDOS;
-        TipoEstacionamiento e4 = TipoEstacionamiento.MOTOS;
+        TipoEstacionamiento e1 = TipoEstacionamiento.Normal;
+        TipoEstacionamiento e2 = TipoEstacionamiento.Electrico;
+        TipoEstacionamiento e3 = TipoEstacionamiento.Minusvalido;
+        TipoEstacionamiento e4 = TipoEstacionamiento.Moto;
 
         Plaza p1 = new Plaza("Plaza1",e1,false);
         Plaza p2 = new Plaza("Plaza2",e1,false);
