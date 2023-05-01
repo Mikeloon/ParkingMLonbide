@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.lksnext.parkingmlonbide.DataClasses.Parking;
 import com.lksnext.parkingmlonbide.DataClasses.Reserva;
 import com.lksnext.parkingmlonbide.DataClasses.TipoEstacionamiento;
 import com.lksnext.parkingmlonbide.DataClasses.User;
@@ -33,7 +34,11 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class BookingFragment extends Fragment {
-
+    private DatePicker datePicker;
+    private TimePicker startTime;
+    private TimePicker endTime;
+    private Spinner spinner;
+    private final TipoEstacionamiento[] tipoescogido = {null};
     public BookingFragment() {
         // Required empty public constructor
     }
@@ -45,7 +50,7 @@ public class BookingFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_booking, container, false);
 
         //Tratamiento de la fecha escogida
-        DatePicker datePicker = v.findViewById(R.id.datePicker);
+        datePicker = v.findViewById(R.id.datePicker);
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR,7);
         long maxDate = calendar.getTimeInMillis();
@@ -67,20 +72,20 @@ public class BookingFragment extends Fragment {
         }
 
         //Tratamiento de la hora escogida
-        TimePicker startTime = v.findViewById(R.id.startTimePicker);
-        TimePicker endTime = v.findViewById(R.id.endTimePicker);
+        startTime = v.findViewById(R.id.startTimePicker);
+        endTime = v.findViewById(R.id.endTimePicker);
         startTime.setIs24HourView(true);
         endTime.setIs24HourView(true);
 
 
         //Añadir tipos de plaza
-        Spinner spinner = v.findViewById(R.id.spinnerTipo);
+        spinner = v.findViewById(R.id.spinnerTipo);
         TipoEstacionamiento[] tipo = TipoEstacionamiento.values();
         ArrayAdapter<TipoEstacionamiento> adapter = new ArrayAdapter<TipoEstacionamiento>(getContext(), android.R.layout.simple_spinner_item,tipo);
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinner.setAdapter(adapter);
 
-        final TipoEstacionamiento[] tipoescogido = {null};
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -116,6 +121,23 @@ public class BookingFragment extends Fragment {
                     r.fechaReserva = date;
                     r.horasReserva = diffHours;
                     r.tipoPlaza = tipoescogido[0];
+
+                    switch (tipoescogido[0]){
+                        case Normal:
+                            Parking.PlazaCoches = Parking.PlazaCoches - 1;
+                            break;
+                        case Electrico:
+                            Parking.PlazasElectricos = Parking.PlazasElectricos - 1;
+                            break;
+                        case Minusvalido:
+                            Parking.PlazasMinusvalidos = Parking.PlazasMinusvalidos -1;
+                            break;
+                        case Moto:
+                            Parking.Motos = Parking.Motos - 1;
+                            break;
+                        default:
+                            break;
+                    }
 
                     User.misReservas.add(r);
                     Toast.makeText(getActivity(), "Reserva en el dia:" + date.toString() +"confirmada", Toast.LENGTH_SHORT).show();
