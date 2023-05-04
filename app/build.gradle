@@ -1,15 +1,7 @@
 plugins {
     id 'com.android.application'
-    id "org.sonarqube"
 }
 
-sonarqube {
-    properties {
-        property "sonar.projectKey", "Mikeloon_ParkingMLonbide"
-        property "sonar.organization", "mikeloon"
-        property "sonar.host.url", "https://sonarcloud.io"
-    }
-}
 android {
     namespace 'com.lksnext.parkingmlonbide'
     compileSdk 33
