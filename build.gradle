@@ -4,6 +4,3 @@ plugins {
     id 'com.android.library' version '7.4.1' apply false
 }
 
-dependencies{
-    classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.3"
-}
