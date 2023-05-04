@@ -13,9 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-dependencies{
-    classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.3"
-}
-
 rootProject.name = "ParkingMLonbide"
 include ':app'
