@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "763306789736",
+    "project_id": "parkingmlonbide",
+    "storage_bucket": "parkingmlonbide.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763306789736:android:844d06bdb9ceaf6bb724dd",
+        "android_client_info": {
+          "package_name": "com.lksnext.parkingmlonbide"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "763306789736-bm2qtktqqlsif1d3t8ad58rt968nj2c3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMo4_uqvFPSJc8pwM00B6G-SUW4g0wp1E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "763306789736-bm2qtktqqlsif1d3t8ad58rt968nj2c3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
