@@ -8,16 +8,15 @@
     tools:context="com.lksnext.parkingmlonbide.RegisterLogin.RegisterActivity">
 
     <TextView
-        android:layout_width= "match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="50dp"
+        android:gravity="center"
         android:text="Registrarse"
         android:textColor="@color/white"
         android:textSize="35dp"
-        android:textStyle = "bold"
-        android:layout_margin="50dp"
-        android:gravity="center"
-        />
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/usernameR"
@@ -38,7 +37,7 @@
         android:textColorHint="@color/white" />
 
     <EditText
-        android:id="@+id/fechanac"
+        android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/usernameR"
@@ -47,31 +46,14 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:background="#30ffffff"
-        android:drawableLeft="@drawable/baseline_calendar_month_24"
-        android:drawablePadding="20dp"
-        android:hint="Fecha de nacimiento"
-        android:inputType="date"
-        android:padding="20dp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white" />
-
-    <EditText
-        android:id="@+id/email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/fechanac"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="#30ffffff"
-        android:drawableLeft="@drawable/baseline_calendar_month_24"
+        android:drawableLeft="@drawable/baseline_email_24"
         android:drawablePadding="20dp"
         android:hint="Correo electrónico"
         android:inputType="textEmailAddress"
         android:padding="20dp"
         android:textColor="@color/white"
         android:textColorHint="@color/white" />
+
     <EditText
         android:id="@+id/passwordR"
         android:layout_width="match_parent"
@@ -109,13 +91,14 @@
         android:textColorHint="@color/white" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/registerbton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/registerbton"
         android:layout_below="@id/repetirpass"
-        android:text="Registrarse"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="137dp"
+        android:layout_marginEnd="137dp"
+        android:layout_marginBottom="20dp"
         android:backgroundTint="@color/design_default_color_secondary"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"
-        />
+        android:text="Registrarse" />
 </RelativeLayout>
