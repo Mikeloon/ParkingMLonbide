@@ -7,7 +7,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -39,6 +41,8 @@ import org.w3c.dom.Text;
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private int GOOGLE_SIGN_IN = 100;
+    private SharedPreferences preferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         TextView emailEditText = (TextView) findViewById(R.id.userEmail);
         TextView passwordEditText = (TextView) findViewById(R.id.password);
@@ -64,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                        emailEditText.getText().toString(),
                         passwordEditText.getText().toString()).addOnCompleteListener(task -> {
                             if (task.isSuccessful()){
+                                saveEmailToSharedPreferences(emailEditText.getText().toString());
                                 openHomepage();
                             } else {
                                 Toast.makeText(MainActivity.this, "Error al iniciar sesion", Toast.LENGTH_SHORT).show();
@@ -132,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     // Autenticación con cuenta de Google exitosa
                                     FirebaseUser user = mAuth.getCurrentUser();
+                                    saveEmailToSharedPreferences(user.getEmail());
                                     openHomepage();
                                 } else {
                                     // Fallo en la autenticación con cuenta de Google
@@ -144,6 +151,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Error al obtener la cuenta de Google", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void saveEmailToSharedPreferences(String email) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("email", email);
+        editor.apply();
     }
 
     public void openHomepage(){

@@ -1,11 +1,13 @@
 package com.lksnext.parkingmlonbide.NavFragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,7 @@ import java.text.SimpleDateFormat;
 
 
 public class ProfileFragment extends Fragment {
+    private SharedPreferences preferences;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -29,14 +32,15 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
-        TextView userTxt = (TextView) v.findViewById(R.id.txtWelcome);
+        //TextView userTxt = (TextView) v.findViewById(R.id.txtWelcome);
         TextView mailTxt = (TextView) v.findViewById(R.id.Correotxt);
-        TextView dateTxt = (TextView) v.findViewById(R.id.fechaTxt);
         TextView reservasTxt = (TextView) v.findViewById(R.id.reservastxt);
 
-        userTxt.setText(User.username);
-        mailTxt.setText(User.email);
-        dateTxt.setText(User.birthdate);
+        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String userEmail = preferences.getString("email", "");
+
+        //userTxt.setText(User.username);
+        mailTxt.setText(userEmail);
 
         String reservas = "";
         SimpleDateFormat formato = new SimpleDateFormat("dd/MMM/yyyy");
