@@ -26,7 +26,7 @@
             android:exported="false" />
         <activity
             android:name="com.lksnext.parkingmlonbide.RegisterLogin.RegisterActivity"
-            android:exported="false" />
+            android:exported="false"/>
 
     </application>
 
