@@ -1,5 +1,6 @@
 package com.lksnext.parkingmlonbide.RegisterLogin;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -7,20 +8,32 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.lksnext.parkingmlonbide.DataClasses.User;
 import com.lksnext.parkingmlonbide.R;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
-
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         TextView username = (TextView) findViewById(R.id.usernameR);
         TextView email = (TextView) findViewById(R.id.email);
@@ -37,6 +50,26 @@ public class RegisterActivity extends AppCompatActivity {
                             pass.getText().toString()
                     ).addOnCompleteListener(task -> {
                         if (task.isSuccessful()){
+                            String uid = mAuth.getCurrentUser().getUid();
+
+                            Map<String, Object> userMap = new HashMap<>();
+                            userMap.put("name", username.getText().toString());
+                            userMap.put("email", email.getText().toString());
+
+                            db.collection("users").document(uid).set(userMap)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Toast.makeText(RegisterActivity.this, "Usuario añadido a firestore correctamente", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(RegisterActivity.this, "Error firestore", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
                             Intent goToLogin = new Intent(RegisterActivity.this,MainActivity.class);
                             Toast.makeText(RegisterActivity.this, "Registro completado", Toast.LENGTH_SHORT).show();
                             startActivity(goToLogin);

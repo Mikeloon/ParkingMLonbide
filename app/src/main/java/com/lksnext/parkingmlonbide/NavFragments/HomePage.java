@@ -1,5 +1,7 @@
 package com.lksnext.parkingmlonbide.NavFragments;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -9,23 +11,25 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.lksnext.parkingmlonbide.DataClasses.User;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.lksnext.parkingmlonbide.RegisterLogin.MainActivity;
 import com.lksnext.parkingmlonbide.R;
 
 public class HomePage extends AppCompatActivity {
-    private SharedPreferences preferences;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,8 @@ public class HomePage extends AppCompatActivity {
         DrawerLayout drawerLayout = findViewById(R.id.draweLayout);
 
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
 
         findViewById(R.id.imgMenu).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,10 +62,41 @@ public class HomePage extends AppCompatActivity {
         });
 
         View header = navigationView.getHeaderView(0);
+
+        TextView navUsername = (TextView) header.findViewById(R.id.userHeader);
         TextView navEmail = (TextView) header.findViewById(R.id.emailHeader);
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String userEmail = preferences.getString("email", "");
-        navEmail.setText(userEmail);
+
+
+
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        db.collection("users").document(uid).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            // El documento existe, puedes acceder a los campos
+                             String username = documentSnapshot.getString("name");
+                             String email = documentSnapshot.getString("email");
+                            navUsername.setText(username);
+                            navEmail.setText(email);
+                            // Utiliza los campos como desees
+                            Log.d(TAG, "Nombre: " + username);
+                            Log.d(TAG, "Correo electrónico: " + email);
+                        } else {
+                            // El documento no existe o aún no se ha creado
+                            Log.d(TAG, "El documento no existe");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Ocurrió un error al obtener el documento
+                        Log.e(TAG, "Error al obtener el documento del usuario", e);
+                    }
+                });
+
         NavController navController = Navigation.findNavController(this, R.id.navHostFragment);
         NavigationUI.setupWithNavController(navigationView,navController);
     }

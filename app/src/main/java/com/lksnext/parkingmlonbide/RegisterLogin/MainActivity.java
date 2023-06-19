@@ -6,6 +6,10 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -38,10 +42,13 @@ import com.lksnext.parkingmlonbide.R;
 
 import org.w3c.dom.Text;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private int GOOGLE_SIGN_IN = 100;
-    private SharedPreferences preferences;
+    private FirebaseFirestore db;
 
 
     @Override
@@ -51,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        db = FirebaseFirestore.getInstance();
 
         TextView emailEditText = (TextView) findViewById(R.id.userEmail);
         TextView passwordEditText = (TextView) findViewById(R.id.password);
@@ -65,16 +72,17 @@ public class MainActivity extends AppCompatActivity {
         loginbton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAuth.signInWithEmailAndPassword(
-                       emailEditText.getText().toString(),
-                        passwordEditText.getText().toString()).addOnCompleteListener(task -> {
-                            if (task.isSuccessful()){
-                                saveEmailToSharedPreferences(emailEditText.getText().toString());
-                                openHomepage();
-                            } else {
-                                Toast.makeText(MainActivity.this, "Error al iniciar sesion", Toast.LENGTH_SHORT).show();
-                            }
-                });
+                if (!emailEditText.getText().toString().isEmpty() && !passwordEditText.getText().toString().isEmpty()){
+                    mAuth.signInWithEmailAndPassword(
+                        emailEditText.getText().toString(),
+                            passwordEditText.getText().toString()).addOnCompleteListener(task -> {
+                                if (task.isSuccessful()){
+                                    openHomepage();
+                                } else {
+                                    Toast.makeText(MainActivity.this, "Error al iniciar sesion", Toast.LENGTH_SHORT).show();
+                                }
+                    });
+                }
             }
 
         });
@@ -138,7 +146,26 @@ public class MainActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     // Autenticación con cuenta de Google exitosa
                                     FirebaseUser user = mAuth.getCurrentUser();
-                                    saveEmailToSharedPreferences(user.getEmail());
+                                    String uid = mAuth.getCurrentUser().getUid();
+                                    String name = user.getDisplayName();
+
+                                    Map<String, Object> userMap = new HashMap<>();
+                                    userMap.put("name", name);
+                                    userMap.put("email", user.getEmail());
+
+                                    db.collection("users").document(uid).set(userMap)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Toast.makeText(MainActivity.this, "Usuario añadido a Firestore correctamente", Toast.LENGTH_SHORT).show();
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(MainActivity.this, "Error al guardar usuario en Firestore", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
                                     openHomepage();
                                 } else {
                                     // Fallo en la autenticación con cuenta de Google
@@ -151,12 +178,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Error al obtener la cuenta de Google", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    private void saveEmailToSharedPreferences(String email) {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("email", email);
-        editor.apply();
     }
 
     public void openHomepage(){

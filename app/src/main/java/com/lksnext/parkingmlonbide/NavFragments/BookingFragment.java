@@ -3,6 +3,7 @@ package com.lksnext.parkingmlonbide.NavFragments;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -20,6 +21,13 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.lksnext.parkingmlonbide.DataClasses.Parking;
 import com.lksnext.parkingmlonbide.DataClasses.Reserva;
 import com.lksnext.parkingmlonbide.DataClasses.TipoEstacionamiento;
@@ -31,6 +39,8 @@ import org.w3c.dom.Text;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class BookingFragment extends Fragment {
@@ -38,6 +48,8 @@ public class BookingFragment extends Fragment {
     private TimePicker startTime;
     private TimePicker endTime;
     private Spinner spinner;
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
     private final TipoEstacionamiento[] tipoescogido = {null};
     public BookingFragment() {
         // Required empty public constructor
@@ -48,6 +60,9 @@ public class BookingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_booking, container, false);
+
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         //Tratamiento de la fecha escogida
         datePicker = v.findViewById(R.id.datePicker);
@@ -118,10 +133,11 @@ public class BookingFragment extends Fragment {
                     int diffHours = (int) TimeUnit.MILLISECONDS.toHours(diffMillis);
 
                     Reserva r = new Reserva();
-                    r.fechaReserva = date;
-                    r.horasReserva = diffHours;
-                    r.tipoPlaza = tipoescogido[0];
+                    r.setFechaReserva(date);
+                    r.setHorasReserva(diffHours);
+                    r.setTipoPlaza(tipoescogido[0]);
 
+                    String uid = mAuth.getCurrentUser().getUid();
                     switch (tipoescogido[0]){
                         case Normal:
                             Parking.PlazaCoches = Parking.PlazaCoches - 1;
@@ -139,8 +155,29 @@ public class BookingFragment extends Fragment {
                             break;
                     }
 
-                    User.misReservas.add(r);
-                    Toast.makeText(getActivity(), "Reserva en el dia:" + date.toString() +"confirmada", Toast.LENGTH_SHORT).show();
+                    Map<String, Object> reservaData = new HashMap<>();
+                    reservaData.put("id", r.getId());
+                    reservaData.put("fechaReserva", r.getFechaReserva());
+                    reservaData.put("horasReserva", r.getHorasReserva());
+                    reservaData.put("tipoPlaza", r.getTipoPlaza().toString());
+                    CollectionReference usersRef = db.collection("users");
+                    DocumentReference userDocRef = usersRef.document(uid);
+
+                    userDocRef.update("reservas", FieldValue.arrayUnion(reservaData))
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // Actualización exitosa
+                                    Toast.makeText(getActivity(), "Reserva en el dia:" + date.toString() +"confirmada", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    // Ocurrió un error al guardar la reserva
+                                    Toast.makeText(getActivity(), "Error al guardar la reserva", Toast.LENGTH_SHORT).show();
+                                }
+                            });
 
                 }else {
                     Toast.makeText(getActivity(), "El periodo de tiempo máximo para la reserva es de 8 horas", Toast.LENGTH_SHORT).show();
@@ -171,7 +208,7 @@ public class BookingFragment extends Fragment {
     private boolean tieneReserva(Date d){
         boolean tiene = false;
         for (Reserva r : User.misReservas){
-            if (r.fechaReserva == d){
+            if (r.getFechaReserva() == d){
                 tiene = true;
             }
         }

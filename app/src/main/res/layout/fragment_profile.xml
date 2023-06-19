@@ -74,5 +74,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/reservasLbl" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewReservas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/reservasLbl"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
