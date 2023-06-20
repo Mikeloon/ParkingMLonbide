@@ -1,4 +1,4 @@
-package com.lksnext.parkingmlonbide.DataClasses;
+package com.lksnext.parkingmlonbide.Adapters;
 
 import static android.content.ContentValues.TAG;
 
@@ -13,19 +13,14 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Transaction;
+import com.lksnext.parkingmlonbide.DataClasses.Reserva;
 import com.lksnext.parkingmlonbide.R;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +32,9 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    public void setReservas(List<Reserva> reservas) {
+        this.reservas = reservas;
+    }
 
     public ReservaAdapter(List<Reserva> reservas, SimpleDateFormat formato) {
         this.reservas = reservas;
@@ -65,39 +63,49 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
             @Override
             public void onClick(View v) {
                 String uid = mAuth.getCurrentUser().getUid();
-                int rid = reserva.getId();
+                long rid = reserva.getId();
                 DocumentReference userRef = db.collection("users").document(uid);
-                db.runTransaction(new Transaction.Function<Void>() {
-                            @Override
-                            public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
-                                DocumentSnapshot userSnapshot = transaction.get(userRef);
-                                if (userSnapshot.exists()) {
-                                    List<Reserva> reservas = new ArrayList<>();
-                                    List<Map<String, Object>> reservasList = (List<Map<String, Object>>) userSnapshot.get("reservas");
-                                    for (Iterator<Map<String, Object>> iterator = reservasList.iterator(); iterator.hasNext();) {
-                                        Map<String, Object> reserva = iterator.next();
-                                        if (reserva.get("id").equals(rid)) {
-                                            iterator.remove();
-                                            break;
-                                        }
-                                    }
-                                    transaction.update(userRef, "reservas", reservasList);
+
+                userRef.get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // Obtener el array de reservas del documento
+                            List<Map<String, Object>> reservas = (List<Map<String, Object>>) document.get("reservas");
+
+                            // Recorrer el array de reservas y eliminar el elemento con el id deseado
+                            for (int i = 0; i < reservas.size(); i++) {
+                                Map<String, Object> reserva = reservas.get(i);
+                                long id = (long) reserva.get("id");
+
+                                if (id == rid) {
+                                    // Eliminar el elemento del array
+                                    reservas.remove(i);
+                                    break; // Terminar el bucle si se encontró el elemento con el id deseado
                                 }
-                                return null;
                             }
-                        })
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "Reserva borrada correctamente");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d(TAG, "El documento no existe");
-                            }
-                        });
+
+                            // Actualizar el campo 'reservas' en el documento
+                            userRef.update("reservas", reservas)
+                                    .addOnSuccessListener(aVoid -> {
+                                        // Actualización exitosa
+                                        Log.d(TAG, "La reserva se ha eliminado correctamente");
+                                        notifyDataSetChanged();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // Error al actualizar el campo
+                                        Log.d(TAG, "No se ha actualizado correctamente");
+                                    });
+                        } else {
+                            // El documento no existe
+                            System.err.println("El documento del usuario no existe.");
+                        }
+                    } else {
+                        // Error al obtener el documento
+                        System.err.println("Error al obtener el documento del usuario: " + task.getException().getMessage());
+                    }
+                });
+
             }
         });
     }

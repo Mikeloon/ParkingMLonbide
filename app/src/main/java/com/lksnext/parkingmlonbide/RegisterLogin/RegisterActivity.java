@@ -1,10 +1,13 @@
 package com.lksnext.parkingmlonbide.RegisterLogin;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,18 +58,19 @@ public class RegisterActivity extends AppCompatActivity {
                             Map<String, Object> userMap = new HashMap<>();
                             userMap.put("name", username.getText().toString());
                             userMap.put("email", email.getText().toString());
+                            userMap.put("reservas", new ArrayList<>());
 
                             db.collection("users").document(uid).set(userMap)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            Toast.makeText(RegisterActivity.this, "Usuario añadido a firestore correctamente", Toast.LENGTH_SHORT).show();
+                                            Log.d(TAG, "Usuario almacenado en firestore correctamente");
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(RegisterActivity.this, "Error firestore", Toast.LENGTH_SHORT).show();
+                                            Log.d(TAG, "Error al guardar el usuario en Firestore");
                                         }
                                     });
 

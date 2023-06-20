@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import android.content.Intent;
@@ -42,6 +43,7 @@ import com.lksnext.parkingmlonbide.R;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,11 +79,14 @@ public class MainActivity extends AppCompatActivity {
                         emailEditText.getText().toString(),
                             passwordEditText.getText().toString()).addOnCompleteListener(task -> {
                                 if (task.isSuccessful()){
+                                    Toast.makeText(MainActivity.this, "Bienvenido " + emailEditText.getText().toString().split("@")[0] + "!", Toast.LENGTH_SHORT).show();
                                     openHomepage();
                                 } else {
                                     Toast.makeText(MainActivity.this, "Error al iniciar sesion", Toast.LENGTH_SHORT).show();
                                 }
                     });
+                } else{
+                    Toast.makeText(MainActivity.this, "Rellene los campos correctamente", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -144,28 +149,47 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
+
                                     // Autenticación con cuenta de Google exitosa
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     String uid = mAuth.getCurrentUser().getUid();
                                     String name = user.getDisplayName();
 
-                                    Map<String, Object> userMap = new HashMap<>();
-                                    userMap.put("name", name);
-                                    userMap.put("email", user.getEmail());
+                                    db.collection("users").document(uid).get()
+                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        DocumentSnapshot document = task.getResult();
+                                                        if (document.exists()) {
+                                                            Log.d(TAG, "Usuario ya registrado.");
+                                                        } else {
+                                                            Map<String, Object> userMap = new HashMap<>();
+                                                            userMap.put("name", name);
+                                                            userMap.put("email", user.getEmail());
+                                                            userMap.put("reservas", new ArrayList<>());
 
-                                    db.collection("users").document(uid).set(userMap)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Toast.makeText(MainActivity.this, "Usuario añadido a Firestore correctamente", Toast.LENGTH_SHORT).show();
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(MainActivity.this, "Error al guardar usuario en Firestore", Toast.LENGTH_SHORT).show();
+
+                                                            db.collection("users").document(uid).set(userMap)
+                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                        @Override
+                                                                        public void onSuccess(Void aVoid) {
+                                                                            Toast.makeText(MainActivity.this, "Bienvenido " + name + "!", Toast.LENGTH_SHORT).show();
+                                                                        }
+                                                                    })
+                                                                    .addOnFailureListener(new OnFailureListener() {
+                                                                        @Override
+                                                                        public void onFailure(@NonNull Exception e) {
+                                                                            Log.d(TAG, "Error al guardar el usuario en Firestore");
+                                                                        }
+                                                                    });
+                                                        }
+                                                    } else {
+                                                        Log.d(TAG, "Error al verificar la existencia del usuario en Firestore");
+                                                    }
                                                 }
                                             });
+                                    Toast.makeText(MainActivity.this, "Bienvenido " + name + "!", Toast.LENGTH_SHORT).show();
                                     openHomepage();
                                 } else {
                                     // Fallo en la autenticación con cuenta de Google

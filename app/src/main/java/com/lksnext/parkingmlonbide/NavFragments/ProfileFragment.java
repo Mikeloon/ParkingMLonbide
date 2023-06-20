@@ -2,7 +2,6 @@ package com.lksnext.parkingmlonbide.NavFragments;
 
 import static android.content.ContentValues.TAG;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,7 +9,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,9 +20,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.lksnext.parkingmlonbide.DataClasses.Reserva;
-import com.lksnext.parkingmlonbide.DataClasses.ReservaAdapter;
+import com.lksnext.parkingmlonbide.Adapters.ReservaAdapter;
 import com.lksnext.parkingmlonbide.DataClasses.TipoEstacionamiento;
-import com.lksnext.parkingmlonbide.DataClasses.User;
 import com.lksnext.parkingmlonbide.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -38,6 +35,7 @@ import java.util.Map;
 public class ProfileFragment extends Fragment {
 
     private FirebaseFirestore db;
+    private ReservaAdapter reservaAdapter;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -92,10 +90,15 @@ public class ProfileFragment extends Fragment {
                             if (reservas != null && !reservas.isEmpty()) {
                                 reservasTxt.setVisibility(View.INVISIBLE);
                                 SimpleDateFormat formato = new SimpleDateFormat("dd/MMM/yyyy");
-                                ReservaAdapter reservaAdapter = new ReservaAdapter(reservas, formato);
-                                recyclerViewReservas.setAdapter(reservaAdapter);
+                                if (reservaAdapter == null) {
+                                    reservaAdapter = new ReservaAdapter(reservas, formato);
+                                    recyclerViewReservas.setAdapter(reservaAdapter);
+                                } else {
+                                    // Si el adaptador ya existe, actualiza los datos y llama a notifyDataSetChanged()
+                                    reservaAdapter.setReservas(reservas);
+                                    reservaAdapter.notifyDataSetChanged();
 
-                            } else {
+                            } }else {
                                 recyclerViewReservas.setVisibility(View.GONE);
                                 reservasTxt.setText("No tienes reservas");
                             }
