@@ -27,9 +27,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.lksnext.parkingmlonbide.RegisterLogin.MainActivity;
 import com.lksnext.parkingmlonbide.R;
 
-public class HomePage extends AppCompatActivity {
+public class HomePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private DrawerLayout drawerLayout;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,10 +97,29 @@ public class HomePage extends AppCompatActivity {
                         // Ocurrió un error al obtener el documento
                         Log.e(TAG, "Error al obtener el documento del usuario", e);
                     }
+
                 });
 
         NavController navController = Navigation.findNavController(this, R.id.navHostFragment);
         NavigationUI.setupWithNavController(navigationView,navController);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        drawerLayout.closeDrawer(GravityCompat.START);
+        int itemId = item.getItemId();
+        if (itemId == R.id.menuProfile) {
+            navController.navigate(R.id.profileFragment);
+        } else if (itemId == R.id.menuParking) {
+            navController.navigate(R.id.ParkingFragment);
+        } else if (itemId == R.id.menuReserva) {
+            navController.navigate(R.id.BookingFragment);
+        } else if (itemId == R.id.Salir) {
+            logout();
+        } else if (itemId == R.id.menuPruebas) {
+            navController.navigate(R.id.PruebasFragment);
+        }
+        return true;
     }
 
     private void logout() {
