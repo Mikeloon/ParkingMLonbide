@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,10 @@ public class PruebasFragment extends Fragment {
 
     private TextView fechaTextView;
     private Calendar calendar;
+    private TextView fechaCorrespondienteTextView;
+    private LinearLayout linearLayout;
+    private ImageView arrowImageView;
+    private boolean isArrowRotated = false;
 
     @Nullable
     @Override
@@ -29,6 +34,9 @@ public class PruebasFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_pruebas, container, false);
 
         fechaTextView = view.findViewById(R.id.fechaTextView);
+        fechaCorrespondienteTextView = view.findViewById(R.id.fechaCorrespondienteTextView);
+        linearLayout = view.findViewById(R.id.LinearLayoutFechaReserva);
+        arrowImageView = view.findViewById(R.id.arrowFecha);
 
         ImageView btnAnterior = view.findViewById(R.id.btnAnterior);
         btnAnterior.setOnClickListener(new View.OnClickListener() {
@@ -46,8 +54,16 @@ public class PruebasFragment extends Fragment {
             }
         });
 
+        linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rotateArrowImage();
+            }
+        });
+
         calendar = Calendar.getInstance();
         actualizarFechaActual();
+        fechaCorrespondienteTextView.setText("Reservar plaza parking");
 
         return view;
     }
@@ -75,4 +91,15 @@ public class PruebasFragment extends Fragment {
         }
     }
 
+    private void rotateArrowImage() {
+        if (isArrowRotated) {
+            // Si la imagen ya está girada, la restauramos a su posición original
+            arrowImageView.animate().rotation(0).start();
+            isArrowRotated = false;
+        } else {
+            // Giramos la imagen 90 grados hacia la derecha
+            arrowImageView.animate().rotation(-90).start();
+            isArrowRotated = true;
+        }
+    }
 }

@@ -19,6 +19,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         TextView emailEditText = (TextView) findViewById(R.id.userEmail);
         TextView passwordEditText = (TextView) findViewById(R.id.password);
         TextView returnRegister = (TextView) findViewById(R.id.goRegister);
-        Button googleLoginBton = (Button) findViewById(R.id.googleSignInButton);
+        ImageView googleLoginBton = (ImageView) findViewById(R.id.googleSignInButton);
 
         TextView forgotPasswordEditText = (TextView) findViewById(R.id.forgotPassword);
 

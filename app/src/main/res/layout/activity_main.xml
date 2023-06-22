@@ -60,19 +60,21 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="20dp"
         />
-    <Button
+
+    <ImageView
         android:id="@+id/googleSignInButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/loginbtn"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="80dp"
-        android:drawableLeft="@drawable/common_google_signin_btn_icon_light_normal"
-        android:text="Iniciar sesión con Google"
-        android:textColor="@color/white" />
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/password"
+        android:layout_alignRight="@id/loginbtn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="-80dp"
+        android:background="@drawable/circular_background"
+        android:contentDescription="Iniciar sesión con Google"
+        android:padding="10dp"
+        android:src="@drawable/googleicon" />
+
 
     <TextView
         android:id="@+id/goRegister"
