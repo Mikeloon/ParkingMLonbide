@@ -59,7 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
                             userMap.put("name", username.getText().toString());
                             userMap.put("email", email.getText().toString());
                             userMap.put("reservas", new ArrayList<>());
-
+                            userMap.put("role","User");
                             db.collection("users").document(uid).set(userMap)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override

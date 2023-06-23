@@ -25,4 +25,9 @@
         android:name="com.lksnext.parkingmlonbide.NavFragments.PruebasFragment"
         android:label="fragment_pruebas"
         tools:layout="@layout/fragment_pruebas" />
+    <fragment
+        android:id="@+id/menuAdmin"
+        android:name="com.lksnext.parkingmlonbide.NavFragments.AdminFragment"
+        android:label="AdminFragment"
+        tools:layout="@layout/fragment_admin"/>
 </navigation>

@@ -139,7 +139,7 @@ public class BookingFragment extends Fragment {
 
                     String uid = mAuth.getCurrentUser().getUid();
                     switch (tipoescogido[0]){
-                        case Normal:
+                        case Coche:
                             Parking.PlazaCoches = Parking.PlazaCoches - 1;
                             break;
                         case Electrico:

@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ParkingFragment"
+    android:id="@+id/AdminFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".NavFragments.ParkingFragment">
+    tools:context=".NavFragments.AdminFragment">
 
 
     <TextView
@@ -24,14 +24,17 @@
 
 
     <ImageView
-        android:id="@+id/CarImg"
+        android:id="@+id/iElectImg"
         android:layout_width="98dp"
         android:layout_height="102dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="192dp"
-        android:src="@drawable/baseline_directions_car_24"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginEnd="60dp"
+        android:src="@drawable/baseline_electric_car_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.969"
+        app:layout_constraintStart_toEndOf="@+id/CarImg"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.268" />
 
     <LinearLayout
         android:id="@+id/layoutCarImg"
@@ -40,10 +43,10 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/iElectImg"
-        app:layout_constraintHorizontal_bias="0.414"
+        app:layout_constraintHorizontal_bias="0.397"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.47">
+        app:layout_constraintVertical_bias="0.411">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -88,29 +91,31 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/iElectImg"
-        android:layout_width="98dp"
-        android:layout_height="102dp"
-        android:layout_marginEnd="64dp"
-        android:src="@drawable/baseline_electric_car_24"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.33" />
-
-    <LinearLayout
+    <Button
+        android:id="@+id/guardarButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="216dp"
-        android:layout_marginBottom="360dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="40dp"
+        android:text="Guardar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="220dp"
+        android:layout_marginBottom="144dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/MotoImg"
+        app:layout_constraintVertical_bias="0.866">
 
         <ImageView
-            android:id="@+id/btnRestaCocheElec"
+            android:id="@+id/btnRestaMoto"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginTop="10dp"
@@ -119,7 +124,7 @@
             android:src="@drawable/baseline_horizontal_rule_24" />
 
         <TextView
-            android:id="@+id/NumCocheElec"
+            android:id="@+id/NumMoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -132,7 +137,7 @@
             android:textSize="24sp" />
 
         <ImageView
-            android:id="@+id/btonSumaElec"
+            android:id="@+id/btonSumaMoto"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center"
@@ -144,6 +149,20 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/restablecerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="56dp"
+        android:text="Restablecer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/guardarButton"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        app:layout_constraintVertical_bias="0.0" />
+
     <ImageView
         android:id="@+id/DisImg"
         android:layout_width="98dp"
@@ -152,18 +171,31 @@
         android:src="@drawable/baseline_accessible_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/CarImg"
-        app:layout_constraintVertical_bias="0.414" />
+        app:layout_constraintTop_toBottomOf="@+id/layoutCarImg"
+        app:layout_constraintVertical_bias="0.188" />
+
+    <ImageView
+        android:id="@+id/CarImg"
+        android:layout_width="98dp"
+        android:layout_height="102dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="152dp"
+        android:src="@drawable/baseline_directions_car_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginBottom="112dp"
+        android:layout_marginBottom="148dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/DisImg"
+        app:layout_constraintVertical_bias="1.0">
 
         <ImageView
             android:id="@+id/btnRestaMinusv"
@@ -204,25 +236,33 @@
         android:id="@+id/MotoImg"
         android:layout_width="98dp"
         android:layout_height="102dp"
-        android:layout_marginBottom="196dp"
+        android:layout_marginTop="62dp"
+        android:layout_marginBottom="232dp"
         android:src="@drawable/baseline_sports_motorsports_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.603"
-        app:layout_constraintStart_toEndOf="@+id/DisImg" />
+        app:layout_constraintStart_toEndOf="@+id/DisImg"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
+        app:layout_constraintVertical_bias="1.0" />
 
     <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="216dp"
-        android:layout_marginBottom="108dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="388dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/layoutCarImg"
+        app:layout_constraintTop_toBottomOf="@+id/iElectImg"
+        app:layout_constraintVertical_bias="0.0">
 
         <ImageView
-            android:id="@+id/btnRestaMoto"
+            android:id="@+id/btnRestaCocheElec"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginTop="10dp"
@@ -231,7 +271,7 @@
             android:src="@drawable/baseline_horizontal_rule_24" />
 
         <TextView
-            android:id="@+id/NumMoto"
+            android:id="@+id/NumCocheElec"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -244,7 +284,7 @@
             android:textSize="24sp" />
 
         <ImageView
-            android:id="@+id/btonSumaMoto"
+            android:id="@+id/btonSumaElec"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center"

@@ -80,6 +80,18 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                             // El documento existe, puedes acceder a los campos
                              String username = documentSnapshot.getString("name");
                              String email = documentSnapshot.getString("email");
+                             String role = documentSnapshot.getString("role");
+                            if (role != null && role.equals("Admin")) {
+                                // Mostrar la opción "Pruebas"
+                                Menu menu = navigationView.getMenu();
+                                menu.findItem(R.id.menuParking).setVisible(false);
+                                menu.findItem(R.id.menuReserva).setVisible(false);
+                                menu.findItem(R.id.menuAdmin).setVisible(true);
+                            } else {
+                                // Ocultar la opción "Pruebas"
+                                Menu menu = navigationView.getMenu();
+                                menu.findItem(R.id.menuAdmin).setVisible(false);
+                            }
                             navUsername.setText(username);
                             navEmail.setText(email);
                             // Utiliza los campos como desees
@@ -118,6 +130,8 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             logout();
         } else if (itemId == R.id.menuPruebas) {
             navController.navigate(R.id.PruebasFragment);
+        } else if (itemId == R.id.menuAdmin){
+            navController.navigate(R.id.AdminFragment);
         }
         return true;
     }

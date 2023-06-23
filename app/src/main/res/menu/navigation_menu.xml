@@ -13,6 +13,10 @@
         android:icon="@drawable/baseline_book_24"
         android:title="Realizar reserva" />
 
+    <item android:id="@+id/menuAdmin"
+        android:icon="@drawable/baseline_admin_panel_settings_24"
+        android:title="Parking Settings" />
+
     <item android:id="@+id/Salir"
         android:icon="@drawable/baseline_exit_to_app_24"
         android:title="Salir" />
@@ -20,4 +24,6 @@
     <item android:id="@+id/menuPruebas"
         android:icon="@drawable/baseline_exit_to_app_24"
         android:title="Pruebas" />
+
+
 </menu>
