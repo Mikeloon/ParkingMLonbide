@@ -128,9 +128,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             navController.navigate(R.id.BookingFragment);
         } else if (itemId == R.id.Salir) {
             logout();
-        } else if (itemId == R.id.menuPruebas) {
-            navController.navigate(R.id.PruebasFragment);
-        } else if (itemId == R.id.menuAdmin){
+        }  else if (itemId == R.id.menuAdmin){
             navController.navigate(R.id.AdminFragment);
         }
         return true;

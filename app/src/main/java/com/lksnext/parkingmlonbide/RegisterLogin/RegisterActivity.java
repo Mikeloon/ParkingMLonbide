@@ -16,7 +16,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.lksnext.parkingmlonbide.DataClasses.User;
 import com.lksnext.parkingmlonbide.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 

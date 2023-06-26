@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.lksnext.parkingmlonbide.DataClasses.Parking;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -77,89 +78,10 @@ public class AdminFragment extends Fragment {
     }
 
     private void obtenerNumeroPlazas() {
-        db.collection("Parking").document("Coche").get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Long numPlazas = document.getLong("NumPlazas");
-                                if (numPlazas != null) {
-                                    numCocheNormal = numPlazas.intValue();
-                                    numCocheNormalTextView.setText(String.valueOf(numCocheNormal));
-                                }
-                            } else {
-                                // El documento no existe
-                            }
-                        } else {
-                            // Error al obtener el documento
-                        }
-                    }
-                });
-
-        db.collection("Parking").document("Electrico").get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Long numPlazas = document.getLong("NumPlazas");
-                                if (numPlazas != null) {
-                                    numCocheElec = numPlazas.intValue();
-                                    numCocheElecTextView.setText(String.valueOf(numCocheElec));
-                                }
-                            } else {
-                                // El documento no existe
-                            }
-                        } else {
-                            // Error al obtener el documento
-                        }
-                    }
-                });
-
-        db.collection("Parking").document("Minusvalido").get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Long numPlazas = document.getLong("NumPlazas");
-                                if (numPlazas != null) {
-                                    numMinusv = numPlazas.intValue();
-                                    numMinusvTextView.setText(String.valueOf(numMinusv));
-                                }
-                            } else {
-                                // El documento no existe
-                            }
-                        } else {
-                            // Error al obtener el documento
-                        }
-                    }
-                });
-
-        db.collection("Parking").document("Moto").get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Long numPlazas = document.getLong("NumPlazas");
-                                if (numPlazas != null) {
-                                    numMoto = numPlazas.intValue();
-                                    numMotoTextView.setText(String.valueOf(numMoto));
-                                }
-                            } else {
-                                // El documento no existe
-                            }
-                        } else {
-                            // Error al obtener el documento
-                        }
-                    }
-                });
+        numCocheNormal = Parking.PlazaCoches;
+        numCocheElec = Parking.PlazasElectricos;
+        numMinusv = Parking.PlazasMinusvalidos;
+        numMoto = Parking.Motos;
     }
 
     private void configurarBotonesRestaSuma() {
@@ -237,31 +159,19 @@ public class AdminFragment extends Fragment {
     }
 
     private void guardarCambios() {
-        Map<String, Object> cocheData = new HashMap<>();
-        cocheData.put("NumPlazas", numCocheNormal);
-
-        Map<String, Object> cocheElecData = new HashMap<>();
-        cocheElecData.put("NumPlazas", numCocheElec);
-
-        Map<String, Object> minusvData = new HashMap<>();
-        minusvData.put("NumPlazas", numMinusv);
-
-        Map<String, Object> motoData = new HashMap<>();
-        motoData.put("NumPlazas", numMoto);
-
-        db.collection("Parking").document("Coche").set(cocheData);
-        db.collection("Parking").document("Electrico").set(cocheElecData);
-        db.collection("Parking").document("Minusvalido").set(minusvData);
-        db.collection("Parking").document("Moto").set(motoData);
+        Parking.PlazaCoches = numCocheNormal;
+        Parking.PlazasElectricos = numCocheElec;
+        Parking.PlazasMinusvalidos = numMinusv;
+        Parking.Motos = numMoto;
 
         Toast.makeText(getActivity(), "Cambios guardados", Toast.LENGTH_SHORT).show();
     }
 
     private void restablecerValores() {
-        numCocheNormal = 0;
-        numCocheElec = 0;
-        numMinusv = 0;
-        numMoto = 0;
+        numCocheNormal = Parking.PlazaCoches;
+        numCocheElec = Parking.PlazasElectricos;
+        numMinusv = Parking.PlazasMinusvalidos;
+        numMoto = Parking.Motos;
 
         numCocheNormalTextView.setText(String.valueOf(numCocheNormal));
         numCocheElecTextView.setText(String.valueOf(numCocheElec));

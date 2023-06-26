@@ -1,27 +1,48 @@
 package com.lksnext.parkingmlonbide.DataClasses;
 
+
 import java.util.Date;
-import java.security.SecureRandom;
 import java.util.UUID;
 
 public class Reserva {
-
-    private int id;
+    private long id;
+    private String plazaId;
     private Date fechaReserva;
-    private int horasReserva;
+    private String horaInicio;
+    private String horaFin;
     private TipoEstacionamiento tipoPlaza;
 
     public Reserva() {
     }
 
-    public Reserva(Date fechaReserva, int horasReserva, TipoEstacionamiento tipoPlaza) {
+    public Reserva(String plazaId, Date fechaReserva, String horaInicio, String horaFin, TipoEstacionamiento tipoPlaza) {
+        this.plazaId = plazaId;
         this.id = generateRandomId();
         this.fechaReserva = fechaReserva;
-        this.horasReserva = horasReserva;
+        this.horaInicio = horaInicio;
+        this.horaFin = horaFin;
         this.tipoPlaza = tipoPlaza;
     }
 
-    public int getId() {
+    public Reserva(String plazaId,long rid, Date fechaReserva, String horaInicio, String horaFin, TipoEstacionamiento tipoPlaza) {
+        this.plazaId = plazaId;
+        this.id = rid;
+        this.fechaReserva = fechaReserva;
+        this.horaInicio = horaInicio;
+        this.horaFin = horaFin;
+        this.tipoPlaza = tipoPlaza;
+    }
+
+
+    public String getPlazaId() {
+        return plazaId;
+    }
+
+    public void setPlazaId(String plazaId) {
+        this.plazaId = plazaId;
+    }
+
+    public long getId() {
         return id;
     }
 
@@ -37,12 +58,20 @@ public class Reserva {
         this.fechaReserva = fechaReserva;
     }
 
-    public int getHorasReserva() {
-        return horasReserva;
+    public String getHoraInicio() {
+        return horaInicio;
     }
 
-    public void setHorasReserva(int horasReserva) {
-        this.horasReserva = horasReserva;
+    public void setHoraInicio(String horaInicio) {
+        this.horaInicio = horaInicio;
+    }
+
+    public String getHoraFin() {
+        return horaFin;
+    }
+
+    public void setHoraFin(String horaFin) {
+        this.horaFin = horaFin;
     }
 
     public TipoEstacionamiento getTipoPlaza() {
@@ -53,9 +82,21 @@ public class Reserva {
         this.tipoPlaza = tipoPlaza;
     }
 
-    public static int generateRandomId() {
-        SecureRandom secureRandom = new SecureRandom();
-        UUID uuid = new UUID(secureRandom.nextLong(), secureRandom.nextLong());
-        return uuid.hashCode();
+    public static long generateRandomId() {
+        UUID uuid = UUID.randomUUID();
+        long mostSignificantBits = uuid.getMostSignificantBits();
+        return Math.abs(mostSignificantBits);
+    }
+
+    @Override
+    public String toString() {
+        return "Reserva{" +
+                "id=" + id +
+                ", fechaReserva=" + fechaReserva +
+                ", horaInicio='" + horaInicio + '\'' +
+                ", horaFin='" + horaFin + '\'' +
+                ", tipoPlaza=" + tipoPlaza +
+                '}';
     }
 }
+

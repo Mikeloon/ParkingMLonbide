@@ -15,16 +15,12 @@
         android:name="com.lksnext.parkingmlonbide.NavFragments.ParkingFragment"
         android:label="fragment_parking"
         tools:layout="@layout/fragment_parking" />
+
     <fragment
         android:id="@+id/menuReserva"
         android:name="com.lksnext.parkingmlonbide.NavFragments.BookingFragment"
-        android:label="fragment_booking"
+        android:label="fragmentbooking"
         tools:layout="@layout/fragment_booking" />
-    <fragment
-        android:id="@+id/menuPruebas"
-        android:name="com.lksnext.parkingmlonbide.NavFragments.PruebasFragment"
-        android:label="fragment_pruebas"
-        tools:layout="@layout/fragment_pruebas" />
     <fragment
         android:id="@+id/menuAdmin"
         android:name="com.lksnext.parkingmlonbide.NavFragments.AdminFragment"

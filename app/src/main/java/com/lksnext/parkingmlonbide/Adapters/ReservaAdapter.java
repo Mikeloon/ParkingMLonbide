@@ -20,7 +20,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.lksnext.parkingmlonbide.DataClasses.Reserva;
 import com.lksnext.parkingmlonbide.R;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -52,13 +54,19 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
     @Override
     public void onBindViewHolder(@NonNull ReservaViewHolder holder, int position) {
         Reserva reserva = reservas.get(position);
+        String horaInicio = reserva.getHoraInicio();
+        String horaFin = reserva.getHoraFin();
 
-        // Mostrar los datos de la reserva en la fila
+        Date documentFecha = reserva.getFechaReserva();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
+        String documentoFecha = dateFormat.format(documentFecha);
+
+        String tipoPlaza = String.valueOf(reserva.getTipoPlaza());
+        String plazaId = reserva.getPlazaId();
         holder.textViewFecha.setText(formato.format(reserva.getFechaReserva()));
-        holder.textViewHoras.setText(reserva.getHorasReserva() + " horas");
+        holder.textViewHoras.setText(horaInicio + " - " + horaFin);
         holder.textViewTipoPlaza.setText(reserva.getTipoPlaza().toString());
 
-        // Manejar el evento de clic del botón "Cancelar"
         holder.buttonCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,7 +80,6 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
                         if (document.exists()) {
                             // Obtener el array de reservas del documento
                             List<Map<String, Object>> reservas = (List<Map<String, Object>>) document.get("reservas");
-
                             // Recorrer el array de reservas y eliminar el elemento con el id deseado
                             for (int i = 0; i < reservas.size(); i++) {
                                 Map<String, Object> reserva = reservas.get(i);
@@ -88,12 +95,44 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
                             // Actualizar el campo 'reservas' en el documento
                             userRef.update("reservas", reservas)
                                     .addOnSuccessListener(aVoid -> {
-                                        // Actualización exitosa
-                                        Log.d(TAG, "La reserva se ha eliminado correctamente");
-                                        notifyDataSetChanged();
+
+                                        DocumentReference plazaRef = db.collection("Parking").document(documentoFecha)
+                                                .collection(tipoPlaza).document(plazaId);
+
+                                        plazaRef.get().addOnCompleteListener(task1 -> {
+                                            if (task1.isSuccessful()) {
+                                                DocumentSnapshot plazaDocument = task1.getResult();
+                                                if (plazaDocument.exists()) {
+                                                    List<Map<String, Object>> plazaReservas = (List<Map<String, Object>>) plazaDocument.get("reservas");
+                                                    for (int i = 0; i < plazaReservas.size(); i++) {
+                                                        Map<String, Object> reserva = plazaReservas.get(i);
+                                                        long id = (long) reserva.get("id");
+
+                                                        if (id == rid) {
+                                                            // Eliminar el elemento del array
+                                                            plazaReservas.remove(i);
+                                                            break; // Terminar el bucle si se encontró el elemento con el id deseado
+                                                        }
+                                                    }
+
+                                                    // Actualizar el campo 'reservas' en el documento del plazaId
+                                                    plazaRef.update("reservas", plazaReservas)
+                                                            .addOnSuccessListener(aVoid1 -> {
+                                                                // Actualización exitosa
+                                                                Log.d(TAG, "La reserva se ha eliminado correctamente del documento del plazaId");
+                                                            })
+                                                            .addOnFailureListener(e1 -> {
+                                                                Log.e(TAG, "Error al actualizar el campo 'reservas' en el documento del plazaId", e1);
+                                                            });
+                                                } else {
+                                                    Log.e(TAG, "El documento del plazaId no existe.");
+                                                }
+                                            } else {
+                                                Log.e(TAG, "Error al obtener el documento del plazaId: " + task1.getException().getMessage());
+                                            }
+                                        });
                                     })
                                     .addOnFailureListener(e -> {
-                                        // Error al actualizar el campo
                                         Log.d(TAG, "No se ha actualizado correctamente");
                                     });
                         } else {
@@ -130,4 +169,3 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
         }
     }
 }
-

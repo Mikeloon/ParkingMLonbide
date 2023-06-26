@@ -21,9 +21,4 @@
         android:icon="@drawable/baseline_exit_to_app_24"
         android:title="Salir" />
 
-    <item android:id="@+id/menuPruebas"
-        android:icon="@drawable/baseline_exit_to_app_24"
-        android:title="Pruebas" />
-
-
 </menu>

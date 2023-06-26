@@ -19,8 +19,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.lksnext.parkingmlonbide.DataClasses.Reserva;
 import com.lksnext.parkingmlonbide.Adapters.ReservaAdapter;
+import com.lksnext.parkingmlonbide.DataClasses.Reserva;
 import com.lksnext.parkingmlonbide.DataClasses.TipoEstacionamiento;
 import com.lksnext.parkingmlonbide.R;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -74,16 +74,13 @@ public class ProfileFragment extends Fragment {
                                     // Obtener los valores de los campos de la reserva
                                     com.google.firebase.Timestamp timestamp = (com.google.firebase.Timestamp) reservaData.get("fechaReserva");
                                     Date fechaReserva = timestamp.toDate();
-                                    Long horasReservaLong = (Long) reservaData.get("horasReserva");
-                                    int horasReserva = horasReservaLong.intValue();
+                                    String horaInicio = (String) reservaData.get("horaInicio");
+                                    String horaFin = (String) reservaData.get("horaFin");
                                     TipoEstacionamiento tipoPlaza = TipoEstacionamiento.valueOf((String) reservaData.get("tipoPlaza"));
-
+                                    Long rid = (long) reservaData.get("id");
+                                    String plazaId = (String) reservaData.get("plazaId");
                                     // Crear objeto Reserva y agregarlo a la lista
-                                    Reserva reserva = new Reserva();
-                                    reserva.setFechaReserva(fechaReserva);
-                                    reserva.setHorasReserva(horasReserva);
-                                    reserva.setTipoPlaza(tipoPlaza);
-
+                                    Reserva reserva = new Reserva(plazaId,rid,fechaReserva, horaInicio, horaFin, tipoPlaza);
                                     reservas.add(reserva);
                                 }
                             }
@@ -102,9 +99,6 @@ public class ProfileFragment extends Fragment {
                                 recyclerViewReservas.setVisibility(View.GONE);
                                 reservasTxt.setText("No tienes reservas");
                             }
-                            // Utiliza los campos como desees
-                            Log.d(TAG, "Nombre: " + username);
-                            Log.d(TAG, "Correo electrónico: " + email);
                         } else {
                             // El documento no existe o aún no se ha creado
                             Log.d(TAG, "El documento no existe");
