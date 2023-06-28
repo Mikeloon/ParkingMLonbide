@@ -2,6 +2,11 @@ package com.lksnext.parkingmlonbide.NavFragments;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +24,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.lksnext.parkingmlonbide.Adapters.AlarmReceiver;
 import com.lksnext.parkingmlonbide.Adapters.ReservaAdapter;
 import com.lksnext.parkingmlonbide.DataClasses.Reserva;
 import com.lksnext.parkingmlonbide.DataClasses.TipoEstacionamiento;
@@ -27,6 +33,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -88,14 +95,15 @@ public class ProfileFragment extends Fragment {
                                 reservasTxt.setVisibility(View.INVISIBLE);
                                 SimpleDateFormat formato = new SimpleDateFormat("dd/MMM/yyyy");
                                 if (reservaAdapter == null) {
-                                    reservaAdapter = new ReservaAdapter(reservas, formato);
+                                    reservaAdapter = new ReservaAdapter(reservas, formato, v, getParentFragmentManager());
                                     recyclerViewReservas.setAdapter(reservaAdapter);
                                 } else {
                                     // Si el adaptador ya existe, actualiza los datos y llama a notifyDataSetChanged()
                                     reservaAdapter.setReservas(reservas);
                                     reservaAdapter.notifyDataSetChanged();
-
-                            } }else {
+                                }
+                                setupAlarms(reservas);
+                            }else {
                                 recyclerViewReservas.setVisibility(View.GONE);
                                 reservasTxt.setText("No tienes reservas");
                             }
@@ -114,5 +122,39 @@ public class ProfileFragment extends Fragment {
                 });
 
         return v;
+    }
+
+    private void setupAlarms(List<Reserva> reservas) {
+        AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+
+        for (Reserva reserva : reservas) {
+            Date fechaReserva = reserva.getFechaReserva();
+            String horaFinReserva = reserva.getHoraFin();
+
+            // Obtener la hora y minutos de la cadena "horaFin"
+            String[] horaMinutos = horaFinReserva.split(":");
+            int hora = Integer.parseInt(horaMinutos[0]);
+            int minutos = Integer.parseInt(horaMinutos[1]);
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(fechaReserva);
+            cal.set(Calendar.HOUR_OF_DAY, hora);
+            cal.set(Calendar.MINUTE, minutos);
+            cal.add(Calendar.MINUTE, -15);
+
+            // Configurar la alarma para la fecha y hora deseada
+            Intent intent = new Intent(requireContext(), AlarmReceiver.class);
+            intent.putExtra("reserva_id", reserva.getId()); // Puedes pasar información adicional si es necesario
+            intent.putExtra("id_user", FirebaseAuth.getInstance().getCurrentUser().getUid());
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), (int) reserva.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+            } else {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+            }
+        }
     }
 }

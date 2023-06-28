@@ -8,9 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,6 +21,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.lksnext.parkingmlonbide.DataClasses.Reserva;
+import com.lksnext.parkingmlonbide.NavFragments.ProfileFragment;
 import com.lksnext.parkingmlonbide.R;
 
 import java.text.ParseException;
@@ -27,7 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaViewHolder> {
-    private Fragment fragment;
+    private View view;
+    private FragmentManager fragmentManager;
 
     private List<Reserva> reservas;
     private SimpleDateFormat formato;
@@ -38,9 +43,11 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
         this.reservas = reservas;
     }
 
-    public ReservaAdapter(List<Reserva> reservas, SimpleDateFormat formato) {
+    public ReservaAdapter(List<Reserva> reservas, SimpleDateFormat formato, View view, FragmentManager fragmentManager) {
         this.reservas = reservas;
         this.formato = formato;
+        this.view = view;
+        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
@@ -119,7 +126,11 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
                                                     plazaRef.update("reservas", plazaReservas)
                                                             .addOnSuccessListener(aVoid1 -> {
                                                                 // Actualización exitosa
-                                                                Log.d(TAG, "La reserva se ha eliminado correctamente del documento del plazaId");
+                                                                Toast.makeText(view.getContext(), "Reserva eliminada correctamente", Toast.LENGTH_SHORT).show();
+                                                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                                                Fragment profileFragment = new ProfileFragment();
+                                                                fragmentTransaction.replace(R.id.profileFragment, profileFragment);
+                                                                fragmentTransaction.commit();
                                                             })
                                                             .addOnFailureListener(e1 -> {
                                                                 Log.e(TAG, "Error al actualizar el campo 'reservas' en el documento del plazaId", e1);

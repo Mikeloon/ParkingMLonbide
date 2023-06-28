@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/fechaTextViewP"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="105dp"
+        android:layout_marginStart="80dp"
         android:layout_marginTop="40dp"
         android:background="@drawable/rounded_rectangle"
         android:gravity="center_vertical">
@@ -87,14 +87,23 @@
             android:src="@drawable/baseline_directions_car_24" />
     </LinearLayout>
 
-
+    <ListView
+        android:id="@+id/listViewCocheP"
+        android:layout_width="96dp"
+        android:layout_height="403dp"
+        android:layout_below="@+id/LinearLayoutImagenCocheP"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="70dp" />
 
     <LinearLayout
         android:id="@+id/LinearLayoutImagenElectricoP"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/fechaTextViewP"
-        android:layout_marginStart="65dp"
+        android:layout_marginStart="75dp"
         android:layout_marginTop="125dp"
         android:layout_toEndOf="@+id/LinearLayoutImagenCocheP"
         android:background="@drawable/rounded_rectangle"
@@ -108,14 +117,23 @@
             android:src="@drawable/baseline_electric_car_24" />
     </LinearLayout>
 
-
+    <ListView
+        android:id="@+id/listViewElectricoP"
+        android:layout_width="96dp"
+        android:layout_height="377dp"
+        android:layout_below="@+id/LinearLayoutImagenElectricoP"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="70dp"
+        android:layout_toEndOf="@+id/listViewCocheP" />
 
     <LinearLayout
         android:id="@+id/LinearLayoutImagenMinusvP"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/fechaTextViewP"
-        android:layout_marginStart="70dp"
+        android:layout_marginStart="75dp"
         android:layout_marginTop="125dp"
         android:layout_toEndOf="@+id/LinearLayoutImagenElectricoP"
         android:background="@drawable/rounded_rectangle"
@@ -129,14 +147,23 @@
             android:src="@drawable/baseline_accessible_24" />
     </LinearLayout>
 
-
+    <ListView
+        android:id="@+id/listViewMinusvP"
+        android:layout_width="89dp"
+        android:layout_height="401dp"
+        android:layout_below="@+id/LinearLayoutImagenMinusvP"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="70dp"
+        android:layout_toEndOf="@+id/listViewElectricoP" />
 
     <LinearLayout
         android:id="@+id/LinearLayoutImagenMotoP"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/fechaTextViewP"
-        android:layout_marginStart="70dp"
+        android:layout_marginStart="65dp"
         android:layout_marginTop="125dp"
         android:layout_toEndOf="@+id/LinearLayoutImagenMinusvP"
         android:background="@drawable/rounded_rectangle"
@@ -150,6 +177,15 @@
             android:src="@drawable/baseline_sports_motorsports_24" />
     </LinearLayout>
 
-
+    <ListView
+        android:id="@+id/listViewMotoP"
+        android:layout_width="89dp"
+        android:layout_height="387dp"
+        android:layout_below="@+id/LinearLayoutImagenMotoP"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="70dp"
+        android:layout_toEndOf="@+id/listViewMinusvP" />
 
 </RelativeLayout>
