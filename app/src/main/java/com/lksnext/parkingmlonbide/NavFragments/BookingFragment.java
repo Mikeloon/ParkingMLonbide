@@ -3,6 +3,7 @@ package com.lksnext.parkingmlonbide.NavFragments;
 import static android.content.ContentValues.TAG;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -42,6 +43,9 @@ import com.lksnext.parkingmlonbide.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -51,6 +55,7 @@ import java.util.Map;
 
 public class BookingFragment extends Fragment {
 
+    private TextView toolbarTitle;
     private FirebaseFirestore db;
     private TextView fechaTextView;
     private Calendar calendar;
@@ -58,7 +63,7 @@ public class BookingFragment extends Fragment {
     private LinearLayout linearLayout;
 
     String[] horasInicio = {"08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"};
-    String[] horasFin = {"08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00"};
+    String[] horasFin = {"08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "15:32"};
 
     @Nullable
     @Override
@@ -73,9 +78,6 @@ public class BookingFragment extends Fragment {
         LinearLayout linearLayoutReservaElectrico = view.findViewById(R.id.LinearLayoutRealizarReservaElec);
         LinearLayout linearLayoutReservaMinusv = view.findViewById(R.id.LinearLayoutRealizarReservaMinusv);
         LinearLayout linearLayoutReservaMoto = view.findViewById(R.id.LinearLayoutRealizarReservaMoto);
-
-
-
 
         ImageView btnAnterior = view.findViewById(R.id.btnAnterior);
         btnAnterior.setOnClickListener(new View.OnClickListener() {
@@ -123,8 +125,6 @@ public class BookingFragment extends Fragment {
 
         calendar = Calendar.getInstance();
         actualizarFechaActual();
-        fechaCorrespondienteTextView.setText("Reservar plaza parking");
-
         return view;
     }
 
@@ -231,7 +231,7 @@ public class BookingFragment extends Fragment {
                 int duracionHoras = calcularDuracionHoras(horaInicio, horaFin);
                 String fechaReserva = fechaTextView.getText().toString();
                 // Verifica si la reserva es válida
-                boolean reservaValida = esReservaValida(horaInicio, horaFin);
+                boolean reservaValida = esReservaValida(fechaReserva,horaInicio, horaFin);
 
                 // Actualiza el texto del cálculo de horas
                 if (reservaValida) {
@@ -258,7 +258,7 @@ public class BookingFragment extends Fragment {
                 int duracionHoras = calcularDuracionHoras(horaInicio, horaFin);
                 String fechaReserva = fechaTextView.getText().toString();
                 // Verifica si la reserva es válida
-                boolean reservaValida = esReservaValida(horaInicio, horaFin);
+                boolean reservaValida = esReservaValida(fechaReserva,horaInicio, horaFin);
 
                 // Actualiza el texto del cálculo de horas
                 if (reservaValida) {
@@ -293,7 +293,7 @@ public class BookingFragment extends Fragment {
                 String horaFin = comboBoxHoraFin.getSelectedItem().toString();
                 TipoEstacionamiento plaza = getTipoPlaza(tipoReserva);
                 // Check if the reservation is valid
-                boolean reservaValida = esReservaValida(horaInicio, horaFin);
+                boolean reservaValida = esReservaValida(fechaReserva,horaInicio, horaFin);
                 comprobarDisponibilidad(horaInicio, horaFin, fechaReserva, plaza, comboBoxPlaza.getSelectedItem().toString(), new DisponibilidadCallback() {
                     @Override
                     public void onDisponibilidadChecked(boolean disponible) {
@@ -366,11 +366,24 @@ public class BookingFragment extends Fragment {
         return duracionHoras;
     }
 
-    private boolean esReservaValida(String horaInicio, String horaFin) {
-        int duracionHoras = calcularDuracionHoras(horaInicio, horaFin);
+    private boolean esReservaValida(String fechaReserva,String horaInicio, String horaFin) {
 
+        int duracionHoras = calcularDuracionHoras(horaInicio, horaFin);
+        LocalTime horaActual = null;
+        int inicioHoras = obtenerHoras(horaInicio);
+        int inicioMinutos = obtenerMinutos(horaInicio);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LocalDate fechaActual = LocalDate.now();
+            horaActual = LocalTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy");
+            LocalDate fechaIngresada = LocalDate.parse(fechaReserva, formatter);
+
+            if (fechaActual.equals(fechaIngresada) && horaActual.toSecondOfDay() > inicioHoras * 3600 + inicioMinutos * 60) {
+                return false;
+            }
+        }
         if (duracionHoras <= 0 || duracionHoras > 8) {
-            // La duración de la reserva es menor a 0 horas o mayor a 8 horas
             return false;
         }
 

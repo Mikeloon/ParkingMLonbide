@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
@@ -29,6 +31,7 @@ import com.lksnext.parkingmlonbide.R;
 
 public class HomePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private FirebaseAuth mAuth;
+
     private FirebaseFirestore db;
     private DrawerLayout drawerLayout;
     private NavController navController;
@@ -41,7 +44,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-
 
         findViewById(R.id.imgMenu).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +117,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         NavController navController = Navigation.findNavController(this, R.id.navHostFragment);
         NavigationUI.setupWithNavController(navigationView,navController);
     }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

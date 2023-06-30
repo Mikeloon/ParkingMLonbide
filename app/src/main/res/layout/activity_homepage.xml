@@ -29,6 +29,7 @@
                 android:contentDescription="@string/app_name"
                 android:src="@drawable/baseline_menu_24"
                 />
+
         </LinearLayout>
         <fragment
             android:layout_width="match_parent"

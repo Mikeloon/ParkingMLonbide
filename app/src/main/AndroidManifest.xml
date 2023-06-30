@@ -33,7 +33,8 @@
         <activity
             android:name="com.lksnext.parkingmlonbide.RegisterLogin.RegisterActivity"
             android:exported="false"/>
-
+        
+        <receiver android:name=".Adapters.AlarmReceiver"/>
     </application>
 
 </manifest>

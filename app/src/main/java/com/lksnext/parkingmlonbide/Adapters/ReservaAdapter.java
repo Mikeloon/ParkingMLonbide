@@ -70,8 +70,8 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
 
         String tipoPlaza = String.valueOf(reserva.getTipoPlaza());
         String plazaId = reserva.getPlazaId();
-        holder.textViewFecha.setText(formato.format(reserva.getFechaReserva()));
-        holder.textViewHoras.setText(horaInicio + " - " + horaFin);
+        holder.textViewFecha.setText(formato.format(reserva.getFechaReserva()) + " ");
+        holder.textViewHoras.setText(horaInicio + " -" + horaFin);
         holder.textViewTipoPlaza.setText(reserva.getTipoPlaza().toString());
 
         holder.buttonCancelar.setOnClickListener(new View.OnClickListener() {

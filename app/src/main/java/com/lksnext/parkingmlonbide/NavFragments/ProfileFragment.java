@@ -3,6 +3,8 @@ package com.lksnext.parkingmlonbide.NavFragments;
 import static android.content.ContentValues.TAG;
 
 import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -44,6 +46,14 @@ public class ProfileFragment extends Fragment {
     private FirebaseFirestore db;
     private ReservaAdapter reservaAdapter;
 
+    private View v;
+
+    private TextView userTxt;
+    private TextView mailTxt;
+    private TextView reservasTxt;
+    private  RecyclerView recyclerViewReservas;
+    private String uid;
+
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -52,17 +62,43 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_profile, container, false);
-        TextView userTxt = (TextView) v.findViewById(R.id.txtWelcome);
-        TextView mailTxt = (TextView) v.findViewById(R.id.Correotxt);
-        TextView reservasTxt = (TextView) v.findViewById(R.id.reservastxt);
-        RecyclerView recyclerViewReservas = v.findViewById(R.id.recyclerViewReservas);
-        recyclerViewReservas.setLayoutManager(new LinearLayoutManager(getContext()));
+        v = inflater.inflate(R.layout.fragment_profile, container, false);
+        userTxt = (TextView) v.findViewById(R.id.txtWelcome);
+        mailTxt = (TextView) v.findViewById(R.id.Correotxt);
+        reservasTxt = (TextView) v.findViewById(R.id.reservastxt);
+        recyclerViewReservas = v.findViewById(R.id.recyclerViewReservas);
 
+        recyclerViewReservas.setLayoutManager(new LinearLayoutManager(getContext()));
+        createNotificationChannel();
         db = FirebaseFirestore.getInstance();
 
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+        buscarReservasUsuario(uid, userTxt, mailTxt, reservasTxt, recyclerViewReservas, v);
+
+        return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        buscarReservasUsuario(uid, userTxt, mailTxt, reservasTxt, recyclerViewReservas, v);
+    }
+
+    private void createNotificationChannel(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "ReservaReminderChannel";
+            String description = "Channel for booking reminder";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("reservaNotification",name,importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getContext().getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void buscarReservasUsuario(String uid, TextView userTxt, TextView mailTxt, TextView reservasTxt, RecyclerView recyclerViewReservas, View v){
         db.collection("users").document(uid).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -94,18 +130,15 @@ public class ProfileFragment extends Fragment {
                             if (reservas != null && !reservas.isEmpty()) {
                                 reservasTxt.setVisibility(View.INVISIBLE);
                                 SimpleDateFormat formato = new SimpleDateFormat("dd/MMM/yyyy");
-                                if (reservaAdapter == null) {
-                                    reservaAdapter = new ReservaAdapter(reservas, formato, v, getParentFragmentManager());
-                                    recyclerViewReservas.setAdapter(reservaAdapter);
-                                } else {
-                                    // Si el adaptador ya existe, actualiza los datos y llama a notifyDataSetChanged()
-                                    reservaAdapter.setReservas(reservas);
-                                    reservaAdapter.notifyDataSetChanged();
-                                }
-                                setupAlarms(reservas);
+                                reservaAdapter = new ReservaAdapter(reservas, formato, v, getParentFragmentManager());
+                                recyclerViewReservas.setAdapter(reservaAdapter);
+                                setupAlarms(reservas,getContext());
                             }else {
                                 recyclerViewReservas.setVisibility(View.GONE);
+                                SimpleDateFormat formato = new SimpleDateFormat("dd/MMM/yyyy");
                                 reservasTxt.setText("No tienes reservas");
+                                reservaAdapter = new ReservaAdapter(new ArrayList<>(), formato, v, getParentFragmentManager());
+                                recyclerViewReservas.setAdapter(reservaAdapter);
                             }
                         } else {
                             // El documento no existe o aún no se ha creado
@@ -120,12 +153,11 @@ public class ProfileFragment extends Fragment {
                         Log.e(TAG, "Error al obtener el documento del usuario", e);
                     }
                 });
-
-        return v;
     }
 
-    private void setupAlarms(List<Reserva> reservas) {
-        AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+    private void setupAlarms(List<Reserva> reservas, Context context) {
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         for (Reserva reserva : reservas) {
             Date fechaReserva = reserva.getFechaReserva();
@@ -136,25 +168,34 @@ public class ProfileFragment extends Fragment {
             int hora = Integer.parseInt(horaMinutos[0]);
             int minutos = Integer.parseInt(horaMinutos[1]);
 
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(fechaReserva);
-            cal.set(Calendar.HOUR_OF_DAY, hora);
-            cal.set(Calendar.MINUTE, minutos);
-            cal.add(Calendar.MINUTE, -15);
+            Calendar currentTime = Calendar.getInstance();
+            int currentHour = currentTime.get(Calendar.HOUR_OF_DAY);
+            int currentMinutes = currentTime.get(Calendar.MINUTE);
 
-            // Configurar la alarma para la fecha y hora deseada
-            Intent intent = new Intent(requireContext(), AlarmReceiver.class);
-            intent.putExtra("reserva_id", reserva.getId()); // Puedes pasar información adicional si es necesario
-            intent.putExtra("id_user", FirebaseAuth.getInstance().getCurrentUser().getUid());
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), (int) reserva.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            int remainingMinutes = (hora - currentHour) * 60 + (minutos - currentMinutes);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
-            } else {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+            if (remainingMinutes <= 0) {
+                continue;
+            } else if (remainingMinutes <= 15) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(fechaReserva);
+                cal.set(Calendar.HOUR_OF_DAY, hora);
+                cal.set(Calendar.MINUTE, minutos);
+                cal.set(Calendar.SECOND, 0);
+                cal.add(Calendar.MINUTE, -15);
+
+                // Configurar la alarma para la fecha y hora deseada
+                Intent intent = new Intent(context, AlarmReceiver.class);
+                intent.putExtra("remainingMinutes", remainingMinutes);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(context,0, intent, PendingIntent.FLAG_IMMUTABLE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+                } else {
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+                }
+                Log.d(TAG,"alarma creada");
             }
+
         }
     }
 }

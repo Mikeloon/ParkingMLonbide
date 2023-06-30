@@ -6,6 +6,8 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.Gravity;
@@ -23,6 +25,7 @@ import android.widget.Toast;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.lksnext.parkingmlonbide.Adapters.CustomListAdapter;
+import com.lksnext.parkingmlonbide.Adapters.SimpleAdapter;
 import com.lksnext.parkingmlonbide.DataClasses.Parking;
 import com.lksnext.parkingmlonbide.R;
 
@@ -39,12 +42,10 @@ public class ParkingFragment extends Fragment {
     private FirebaseFirestore db;
     private TextView fechaTextView;
     private Calendar calendar;
-    private TextView fechaCorrespondienteTextView;
-    private LinearLayout linearLayout;
-    private ListView listViewCoche;
-    private ListView listViewElectrico;
-    private ListView listViewMinusv;
-    private ListView listViewMoto;
+    private RecyclerView recyclerViewCoche;
+    private RecyclerView recyclerViewElectrico;
+    private RecyclerView recyclerViewMinusv;
+    private RecyclerView recyclerViewMoto;
 
 
     public ParkingFragment() {
@@ -60,12 +61,23 @@ public class ParkingFragment extends Fragment {
 
         db = FirebaseFirestore.getInstance();
         fechaTextView = view.findViewById(R.id.fechaTextViewP);
-        fechaCorrespondienteTextView = view.findViewById(R.id.fechaCorrespondienteTextViewP);
-        linearLayout = view.findViewById(R.id.LinearLayoutFechaReservaP);
-        listViewCoche = view.findViewById(R.id.listViewCocheP);
-        listViewElectrico = view.findViewById(R.id.listViewElectricoP);
-        listViewMinusv = view.findViewById(R.id.listViewMinusvP);
-        listViewMoto = view.findViewById(R.id.listViewMotoP);
+        recyclerViewCoche = view.findViewById(R.id.recyclerViewReservasN);
+        recyclerViewElectrico = view.findViewById(R.id.recyclerViewReservasE);
+        recyclerViewMinusv = view.findViewById(R.id.recyclerViewReservasMinusv);
+        recyclerViewMoto = view.findViewById(R.id.recyclerViewReservasM);
+
+        LinearLayoutManager layoutManagerCoche = new LinearLayoutManager(getContext());
+        recyclerViewCoche.setLayoutManager(layoutManagerCoche);
+
+        LinearLayoutManager layoutManagerElectrico = new LinearLayoutManager(getContext());
+        recyclerViewElectrico.setLayoutManager(layoutManagerElectrico);
+
+        LinearLayoutManager layoutManagerMinusv = new LinearLayoutManager(getContext());
+        recyclerViewMinusv.setLayoutManager(layoutManagerMinusv);
+
+        LinearLayoutManager layoutManagerMoto = new LinearLayoutManager(getContext());
+        recyclerViewMoto.setLayoutManager(layoutManagerMoto);
+
 
         ImageView btnAnterior = view.findViewById(R.id.btnAnteriorP);
         btnAnterior.setOnClickListener(new View.OnClickListener() {
@@ -132,13 +144,22 @@ public class ParkingFragment extends Fragment {
                             for (Map<String, Object> reserva : reservas) {
                                 String intervaloHoras = (String) reserva.get("intervaloHoras");
                                 String usuario = (String) reserva.get("usuario");
-                                String reservaString = String.format("%s \n %s: %s", plazaId, usuario, intervaloHoras);
+                                String reservaString = String.format("%s: \n%s | %s", usuario, plazaId, intervaloHoras);
                                 reservasCoche.add(reservaString);
                             }
                         }
                     }
-                    ArrayAdapter<String> adapterCoche = new CustomListAdapter(requireContext(), reservasCoche);
-                    listViewCoche.setAdapter(adapterCoche);
+                    Log.d(TAG,reservasCoche.toString());
+                    if (reservasCoche != null && !reservasCoche.isEmpty()) {
+                        RecyclerView.Adapter adapterCoche = new SimpleAdapter(reservasCoche);
+                        recyclerViewCoche.setAdapter(adapterCoche);
+
+                    } else{
+                        reservasCoche.add("No hay reservas de este tipo de plaza este dia");
+                        RecyclerView.Adapter adapterCoche = new SimpleAdapter(reservasCoche);
+                        recyclerViewCoche.setAdapter(adapterCoche);
+                        Log.d(TAG, String.valueOf(adapterCoche.getItemCount()));
+                    }
                 })
                 .addOnFailureListener(e -> {
                     Log.d(TAG,"Error en coger las reservas de coches");
@@ -157,13 +178,21 @@ public class ParkingFragment extends Fragment {
                             for (Map<String, Object> reserva : reservas) {
                                 String intervaloHoras = (String) reserva.get("intervaloHoras");
                                 String usuario = (String) reserva.get("usuario");
-                                String reservaString = String.format("%s \n %s: %s", plazaId, usuario, intervaloHoras);
+                                String reservaString = String.format("%s: \n%s | %s", usuario, plazaId, intervaloHoras);
                                 reservasElectrico.add(reservaString);
                             }
                         }
                     }
-                    ArrayAdapter<String> adapterElectrico = new CustomListAdapter(requireContext(), reservasElectrico);
-                    listViewElectrico.setAdapter(adapterElectrico);
+                    Log.d(TAG,reservasElectrico.toString());
+                    if (reservasElectrico != null && !reservasElectrico.isEmpty()) {
+                        RecyclerView.Adapter adapterElectrico = new SimpleAdapter(reservasElectrico);
+                        recyclerViewElectrico.setAdapter(adapterElectrico);
+
+                    } else{
+                        reservasElectrico.add("No hay reservas de este tipo de plaza este dia");
+                        RecyclerView.Adapter adapterElectrico = new SimpleAdapter(reservasElectrico);
+                        recyclerViewElectrico.setAdapter(adapterElectrico);
+                    }
                 })
                 .addOnFailureListener(e -> {
                     Log.d(TAG,"Error en coger las reservas electricas");
@@ -182,13 +211,21 @@ public class ParkingFragment extends Fragment {
                             for (Map<String, Object> reserva : reservas) {
                                 String intervaloHoras = (String) reserva.get("intervaloHoras");
                                 String usuario = (String) reserva.get("usuario");
-                                String reservaString = String.format("%s \n %s: %s", plazaId, usuario, intervaloHoras);
+                                String reservaString = String.format("%s: \n%s | %s", usuario, plazaId, intervaloHoras);
                                 reservasMinusv.add(reservaString);
                             }
                         }
                     }
-                    ArrayAdapter<String> adapterMinusv = new CustomListAdapter(requireContext(), reservasMinusv);
-                    listViewMinusv.setAdapter(adapterMinusv);
+                    Log.d(TAG,reservasMinusv.toString());
+                    if (reservasMinusv != null && !reservasMinusv.isEmpty()) {
+                        RecyclerView.Adapter adapterMinusv = new SimpleAdapter(reservasMinusv);
+                        recyclerViewMinusv.setAdapter(adapterMinusv);
+
+                    } else{
+                        reservasMinusv.add("No hay reservas de este tipo de plaza este dia");
+                        RecyclerView.Adapter adapterMinusv = new SimpleAdapter(reservasMinusv);
+                        recyclerViewMinusv.setAdapter(adapterMinusv);
+                    }
                 })
                 .addOnFailureListener(e -> {
                     Log.d(TAG,"Error en coger las reservas minusvalido");
@@ -207,13 +244,22 @@ public class ParkingFragment extends Fragment {
                             for (Map<String, Object> reserva : reservas) {
                                 String intervaloHoras = (String) reserva.get("intervaloHoras");
                                 String usuario = (String) reserva.get("usuario");
-                                String reservaString = String.format("%s \n %s: %s", plazaId, usuario, intervaloHoras);
+                                String reservaString = String.format("%s: \n%s | %s", usuario, plazaId, intervaloHoras);
                                 reservasMoto.add(reservaString);
                             }
                         }
                     }
-                    ArrayAdapter<String> adapterMoto = new CustomListAdapter(requireContext(), reservasMoto);
-                    listViewMoto.setAdapter(adapterMoto);
+                    Log.d(TAG,reservasMoto.toString());
+                    if (reservasMoto != null && !reservasMoto.isEmpty()) {
+                        RecyclerView.Adapter adapterMoto = new SimpleAdapter(reservasMoto);
+                        recyclerViewMoto.setAdapter(adapterMoto);
+
+                    } else{
+                        reservasMoto.add("No hay reservas de este tipo de plaza este dia");
+                        RecyclerView.Adapter adapterMoto = new SimpleAdapter(reservasMoto);
+                        recyclerViewMoto.setAdapter(adapterMoto);
+                    }
+
                 })
                 .addOnFailureListener(e -> {
                     Log.d(TAG,"Error en coger las reservas moto");
