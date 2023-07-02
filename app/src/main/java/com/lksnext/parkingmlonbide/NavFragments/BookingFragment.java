@@ -63,8 +63,8 @@ public class BookingFragment extends Fragment {
 
     public static final String DAY_FORMAT = "dd/MMM/yyyy";
 
-    String[] horasInicio = {"08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00"};
-    String[] horasFin = {"08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30"};
+    String[] horasInicio = {"08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "22:19"};
+    String[] horasFin = {"08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "22:34"};
 
     @Nullable
     @Override
@@ -530,7 +530,7 @@ public class BookingFragment extends Fragment {
         if (remainingMinutes <= 0) {
             Log.d(TAG,"Reserva terminada");
         }
-        else if (remainingMinutes <= 15) {
+        else {
             Calendar cal = Calendar.getInstance();
             cal.setTime(fechaReserva);
             cal.set(Calendar.HOUR_OF_DAY, hora);
@@ -539,7 +539,6 @@ public class BookingFragment extends Fragment {
             cal.add(Calendar.MINUTE, -15);
 
             Intent intent = new Intent(context, AlarmReceiver.class);
-            intent.putExtra("remainingMinutes", remainingMinutes);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context,0, intent, PendingIntent.FLAG_IMMUTABLE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);

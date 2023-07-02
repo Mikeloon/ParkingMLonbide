@@ -23,17 +23,14 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         Intent i = new Intent(context, HomePage.class);
-        int remainingMinutes = intent.getIntExtra("remainingMinutes", -1);
-        if (remainingMinutes <= 0) {
-            return;
-        }
+
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, i, PendingIntent.FLAG_MUTABLE);
         Log.d(TAG, "Intent creado hecho");
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "reservaNotification")
                 .setSmallIcon(R.drawable.notification_icon)
                 .setContentTitle("Tu reserva está a punto de finalizar!")
-                .setContentText("Quedan " + remainingMinutes + " minutos para que termine tu reserva.")
+                .setContentText("Quedan 15 minutos para que termine tu reserva.")
                 .setAutoCancel(true)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
