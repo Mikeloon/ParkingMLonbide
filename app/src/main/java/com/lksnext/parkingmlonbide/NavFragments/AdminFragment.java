@@ -1,5 +1,6 @@
 package com.lksnext.parkingmlonbide.NavFragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +30,10 @@ public class AdminFragment extends Fragment {
             restaMinusvImageView, sumaMinusvImageView, restaMotoImageView, sumaMotoImageView;
     private Button guardarButton, restablecerButton;
 
-    private int numCocheNormal, numCocheElec, numMinusv, numMoto;
+    private static int numCocheNormal;
+    private static int numCocheElec;
+    private static int numMinusv;
+    private static int numMoto;
 
     private FirebaseFirestore db;
 
@@ -63,7 +67,7 @@ public class AdminFragment extends Fragment {
         guardarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                guardarCambios();
+                guardarCambios(getActivity());
             }
         });
 
@@ -156,14 +160,15 @@ public class AdminFragment extends Fragment {
             }
         });
     }
-    private void guardarCambios() {
+    private static void guardarCambios(Activity activity) {
         Parking.PlazaCoches = numCocheNormal;
         Parking.PlazasElectricos = numCocheElec;
         Parking.PlazasMinusvalidos = numMinusv;
         Parking.Motos = numMoto;
 
-        Toast.makeText(getActivity(), "Cambios guardados", Toast.LENGTH_SHORT).show();
+        Toast.makeText(activity, "Cambios guardados", Toast.LENGTH_SHORT).show();
     }
+
     private void restablecerValores() {
         numCocheNormal = Parking.PlazaCoches;
         numCocheElec = Parking.PlazasElectricos;
@@ -175,6 +180,6 @@ public class AdminFragment extends Fragment {
         numMinusvTextView.setText(String.valueOf(numMinusv));
         numMotoTextView.setText(String.valueOf(numMoto));
 
-        guardarCambios();
+        guardarCambios(getActivity());
     }
 }

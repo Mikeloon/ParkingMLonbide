@@ -48,10 +48,9 @@ public class AlarmReceiver extends BroadcastReceiver {
             permissionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(permissionIntent);
         }
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             notificationManagerCompat.notify(123, builder.build());
-            Log.d(TAG,"notificacion hecho");
+            Log.d(TAG, "notificacion hecho");
         }
-
     }
 }

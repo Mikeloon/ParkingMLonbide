@@ -53,6 +53,8 @@ public class ProfileFragment extends Fragment {
     private  RecyclerView recyclerViewReservas;
     private String uid;
 
+    public static final String DAY_FORMAT = "dd/MMM/yyyy";
+
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -111,7 +113,7 @@ public class ProfileFragment extends Fragment {
 
         Query UsuarioReservas = db.collection("Parking").whereEqualTo("reserva.usuarioId", uid);
         List<Reserva> reservaList = new ArrayList<>();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat(DAY_FORMAT);
 
         UsuarioReservas.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -141,13 +143,13 @@ public class ProfileFragment extends Fragment {
                     if (!reservaList.isEmpty()) {
                         reservasTxt.setVisibility(View.INVISIBLE);
                         recyclerViewReservas.setVisibility(View.VISIBLE);
-                        SimpleDateFormat formato = new SimpleDateFormat("dd/MMM/yyyy");
+                        SimpleDateFormat formato = new SimpleDateFormat(DAY_FORMAT);
                         reservaAdapter = new ReservaAdapter(reservaList, formato, v, getParentFragmentManager());
                         recyclerViewReservas.setAdapter(reservaAdapter);
                     } else {
                         recyclerViewReservas.setVisibility(View.GONE);
                         reservasTxt.setVisibility(View.VISIBLE);
-                        SimpleDateFormat formato = new SimpleDateFormat("dd/MMM/yyyy");
+                        SimpleDateFormat formato = new SimpleDateFormat(DAY_FORMAT);
                         reservasTxt.setText("No tienes reservas");
                         reservaAdapter = new ReservaAdapter(new ArrayList<>(), formato, v, getParentFragmentManager());
                         recyclerViewReservas.setAdapter(reservaAdapter);

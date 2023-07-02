@@ -66,6 +66,7 @@ public class BookingFragment extends Fragment {
     private TextView fechaTextView;
     private Calendar calendar;
 
+    public static final String DAY_FORMAT = "dd/MMM/yyyy";
 
     String[] horasInicio = {"08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:30"};
     String[] horasFin = {"08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:10", "18:35"};
@@ -146,7 +147,7 @@ public class BookingFragment extends Fragment {
     }
 
     private void actualizarFechaActual() {
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MMM/yyyy");
+        SimpleDateFormat formato = new SimpleDateFormat(DAY_FORMAT);
         Date fechaActual = calendar.getTime();
         fechaTextView.setText(formato.format(fechaActual));
         fechaTextView.setGravity(Gravity.CENTER);
@@ -255,8 +256,8 @@ public class BookingFragment extends Fragment {
 
         // Configurar el tamaño y la interactividad del popup
         popupWindow.setContentView(popupView);
-        popupWindow.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
-        popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        popupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         popupWindow.setFocusable(true);
 
         // Mostrar el popup en la posición deseada
@@ -275,7 +276,7 @@ public class BookingFragment extends Fragment {
                         if (disponible) {
                             String fechaReserva = fechaTextView.getText().toString();
                             Date fechaDate = null;
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MMM/yyyy");
+                            SimpleDateFormat dateFormat = new SimpleDateFormat(DAY_FORMAT);
                             try {
                                 fechaDate = dateFormat.parse(fechaReserva);
                             } catch (ParseException e) {
@@ -336,7 +337,7 @@ public class BookingFragment extends Fragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             LocalDate fechaActual = LocalDate.now();
             horaActual = LocalTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DAY_FORMAT);
             LocalDate fechaIngresada = LocalDate.parse(fechaReserva, formatter);
 
             if (fechaActual.equals(fechaIngresada) && horaActual.toSecondOfDay() > inicioHoras * 3600 + inicioMinutos * 60) {
@@ -362,7 +363,6 @@ public class BookingFragment extends Fragment {
 
     private TipoEstacionamiento getTipoPlaza(String plaza){
         TipoEstacionamiento tipoReserva = null;
-
         if (plaza.contains("convencional")) {
             tipoReserva = TipoEstacionamiento.Coche;
         } else if (plaza.contains("eléctrico")) {
@@ -371,6 +371,9 @@ public class BookingFragment extends Fragment {
             tipoReserva = TipoEstacionamiento.Minusvalido;
         } else if (plaza.contains("moto")) {
             tipoReserva = TipoEstacionamiento.Moto;
+        }
+        if (tipoReserva == null) {
+            throw new IllegalArgumentException("Tipo de plaza no válido: " + plaza);
         }
         return tipoReserva;
     }
@@ -488,7 +491,6 @@ public class BookingFragment extends Fragment {
         try {
             date = dateFormat.parse(hora);
         } catch (ParseException e) {
-            e.printStackTrace();
         }
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);

@@ -140,66 +140,48 @@ public class ParkingFragment extends Fragment {
                     for (QueryDocumentSnapshot ReservaDocument : task.getResult()) {
                         Map<String, Object> reserva = (Map<String, Object>) ReservaDocument.getData().get("reserva");
                         Log.d(TAG,reserva.toString());
-                        switch ((String) reserva.get("tipoPlaza")) {
+                        String tipoPlaza = (String) reserva.get("tipoPlaza");
+                        String reservaString = String.format("%s: %s", reserva.get("plazaId"), reserva.get("intervaloHoras"));
+
+                        switch (tipoPlaza) {
                             case "Coche":
-                                String CocheString = String.format("%s: %s", reserva.get("plazaId"), reserva.get("intervaloHoras"));
-                                reservasCoche.add(CocheString);
+                                reservasCoche.add(reservaString);
                                 break;
                             case "Electrico":
-                                String ElectricoString = String.format("%s: %s", reserva.get("plazaId"), reserva.get("intervaloHoras"));
-                                reservasElectrico.add(ElectricoString);
+                                reservasElectrico.add(reservaString);
                                 break;
                             case "Minusvalido":
-                                String MinusvString = String.format("%s: %s", reserva.get("plazaId"), reserva.get("intervaloHoras"));
-                                reservasMinusv.add(MinusvString);
+                                reservasMinusv.add(reservaString);
                                 break;
                             case "Moto":
-                                String MotoString = String.format("%s: %s", reserva.get("plazaId"), reserva.get("intervaloHoras"));
-                                reservasMoto.add(MotoString);
+                                reservasMoto.add(reservaString);
                                 break;
                             default:
                                 break;
                         }
                     }
-                    if (reservasCoche != null && !reservasCoche.isEmpty()) {
-                        Log.d(TAG,"Array final coches:" + reservasCoche.toString());
-                        RecyclerView.Adapter adapterCoche = new SimpleAdapter(reservasCoche);
-                        recyclerViewCoche.setAdapter(adapterCoche);
-
-                    } else{
-                        reservasCoche.add("No hay reservas de este tipo de plaza este dia");
-                        RecyclerView.Adapter adapterCoche = new SimpleAdapter(reservasCoche);
-                        recyclerViewCoche.setAdapter(adapterCoche);
-                        Log.d(TAG, String.valueOf(adapterCoche.getItemCount()));
+                    RecyclerView.Adapter adapterCoche = new SimpleAdapter(reservasCoche);
+                    recyclerViewCoche.setAdapter(adapterCoche);
+                    if (reservasCoche.isEmpty()) {
+                        reservasCoche.add("No hay reservas de este tipo de plaza este día");
                     }
 
-                    if (reservasElectrico != null && !reservasElectrico.isEmpty()) {
-                        RecyclerView.Adapter adapterElectrico = new SimpleAdapter(reservasElectrico);
-                        recyclerViewElectrico.setAdapter(adapterElectrico);
-
-                    } else{
-                        reservasElectrico.add("No hay reservas de este tipo de plaza este dia");
-                        RecyclerView.Adapter adapterElectrico = new SimpleAdapter(reservasElectrico);
-                        recyclerViewElectrico.setAdapter(adapterElectrico);
+                    RecyclerView.Adapter adapterElectrico = new SimpleAdapter(reservasElectrico);
+                    recyclerViewElectrico.setAdapter(adapterElectrico);
+                    if (reservasElectrico.isEmpty()) {
+                        reservasElectrico.add("No hay reservas de este tipo de plaza este día");
                     }
 
-                    if (reservasMinusv != null && !reservasMinusv.isEmpty()) {
-                        RecyclerView.Adapter adapterMinusv = new SimpleAdapter(reservasMinusv);
-                        recyclerViewMinusv.setAdapter(adapterMinusv);
-
-                    } else{
-                        reservasMinusv.add("No hay reservas de este tipo de plaza este dia");
-                        RecyclerView.Adapter adapterMinusv = new SimpleAdapter(reservasMinusv);
-                        recyclerViewMinusv.setAdapter(adapterMinusv);
+                    RecyclerView.Adapter adapterMinusv = new SimpleAdapter(reservasMinusv);
+                    recyclerViewMinusv.setAdapter(adapterMinusv);
+                    if (reservasMinusv.isEmpty()) {
+                        reservasMinusv.add("No hay reservas de este tipo de plaza este día");
                     }
-                    if (reservasMoto != null && !reservasMoto.isEmpty()) {
-                        RecyclerView.Adapter adapterMoto = new SimpleAdapter(reservasMoto);
-                        recyclerViewMoto.setAdapter(adapterMoto);
 
-                    } else{
-                        reservasMoto.add("No hay reservas de este tipo de plaza este dia");
-                        RecyclerView.Adapter adapterMoto = new SimpleAdapter(reservasMoto);
-                        recyclerViewMoto.setAdapter(adapterMoto);
+                    RecyclerView.Adapter adapterMoto = new SimpleAdapter(reservasMoto);
+                    recyclerViewMoto.setAdapter(adapterMoto);
+                    if (reservasMoto.isEmpty()) {
+                        reservasMoto.add("No hay reservas de este tipo de plaza este día");
                     }
                     progressBar.setVisibility(View.INVISIBLE);
                     fechaTextView.setVisibility(View.VISIBLE);

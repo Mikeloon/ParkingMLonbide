@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private int GOOGLE_SIGN_IN = 100;
     private FirebaseFirestore db;
 
+    public static final String MSG_CONST = "Bienvenido";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                             emailEditText.getText().toString(),
                             passwordEditText.getText().toString()).addOnCompleteListener(task -> {
                         if (task.isSuccessful()){
-                            Toast.makeText(MainActivity.this, "Bienvenido " + emailEditText.getText().toString().split("@")[0] + "!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, MSG_CONST + " " + emailEditText.getText().toString().split("@")[0] + "!", Toast.LENGTH_SHORT).show();
                             openHomepage();
                         } else {
                             Toast.makeText(MainActivity.this, "Error al iniciar sesion", Toast.LENGTH_SHORT).show();
@@ -166,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
                                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                 @Override
                                                                 public void onSuccess(Void aVoid) {
-                                                                    Toast.makeText(MainActivity.this, "Bienvenido " + name + "!", Toast.LENGTH_SHORT).show();
+                                                                    Toast.makeText(MainActivity.this, MSG_CONST + " " + name + "!", Toast.LENGTH_SHORT).show();
                                                                 }
                                                             })
                                                             .addOnFailureListener(new OnFailureListener() {
@@ -181,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
                                             }
                                         }
                                     });
-                            Toast.makeText(MainActivity.this, "Bienvenido " + name + "!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, MSG_CONST + " " + name + "!", Toast.LENGTH_SHORT).show();
                             openHomepage();
                         } else {
                             // Fallo en la autenticación con cuenta de Google
