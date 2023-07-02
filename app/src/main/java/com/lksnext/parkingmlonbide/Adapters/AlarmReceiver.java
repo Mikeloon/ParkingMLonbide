@@ -3,7 +3,6 @@ package com.lksnext.parkingmlonbide.Adapters;
 import static android.content.ContentValues.TAG;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;

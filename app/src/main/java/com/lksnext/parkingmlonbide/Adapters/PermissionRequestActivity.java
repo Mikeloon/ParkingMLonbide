@@ -2,7 +2,6 @@ package com.lksnext.parkingmlonbide.Adapters;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.core.app.ActivityCompat;

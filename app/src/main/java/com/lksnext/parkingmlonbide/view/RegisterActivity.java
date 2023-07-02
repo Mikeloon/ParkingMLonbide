@@ -18,9 +18,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.lksnext.parkingmlonbide.R;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.lksnext.parkingmlonbide.view.MainActivity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
