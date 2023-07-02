@@ -1,6 +1,5 @@
 package com.lksnext.parkingmlonbide.NavFragments;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,33 +8,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.lksnext.parkingmlonbide.DataClasses.Parking;
 
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.lksnext.parkingmlonbide.DataClasses.Parking;
 import com.lksnext.parkingmlonbide.R;
 
 public class AdminFragment extends Fragment {
 
-    private static TextView numCocheNormalTextView;
-    private static TextView numCocheElecTextView;
-    private static TextView numMinusvTextView;
-    private static TextView numMotoTextView;
-    private static ImageView restaNormalImageView;
-    private static ImageView sumaNormalImageView;
-    private static ImageView restaCocheElecImageView;
-    private static ImageView sumaCocheElecImageView;
-    private static ImageView restaMinusvImageView;
-    private static ImageView sumaMinusvImageView;
-    private static ImageView restaMotoImageView;
-    private static ImageView sumaMotoImageView;
+    private TextView numCocheNormalTextView, numCocheElecTextView, numMinusvTextView, numMotoTextView;
+    private ImageView restaNormalImageView, sumaNormalImageView, restaCocheElecImageView, sumaCocheElecImageView,
+            restaMinusvImageView, sumaMinusvImageView, restaMotoImageView, sumaMotoImageView;
     private Button guardarButton, restablecerButton;
 
-    private static int numCocheNormal;
-    private static int numCocheElec;
-    private static int numMinusv;
-    private static int numMoto;
+    private int numCocheNormal, numCocheElec, numMinusv, numMoto;
 
     private FirebaseFirestore db;
 
@@ -66,24 +53,14 @@ public class AdminFragment extends Fragment {
 
         configurarBotonesRestaSuma();
 
-        guardarButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                guardarCambios(getActivity());
-            }
-        });
+        guardarButton.setOnClickListener(v -> guardarCambios());
 
-        restablecerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                restablecerValores(getActivity());
-            }
-        });
+        restablecerButton.setOnClickListener(v -> restablecerValores());
 
         return view;
     }
 
-    private  static void obtenerNumeroPlazas() {
+    private void obtenerNumeroPlazas() {
         numCocheNormal = Parking.PlazaCoches;
         numCocheElec = Parking.PlazasElectricos;
         numMinusv = Parking.PlazasMinusvalidos;
@@ -92,86 +69,64 @@ public class AdminFragment extends Fragment {
         numCocheElecTextView.setText(String.valueOf(numCocheElec));
         numMinusvTextView.setText(String.valueOf(numMinusv));
         numMotoTextView.setText(String.valueOf(numMoto));
-
     }
 
-    private static void configurarBotonesRestaSuma() {
-        restaNormalImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (numCocheNormal > 0) {
-                    numCocheNormal--;
-                    numCocheNormalTextView.setText(String.valueOf(numCocheNormal));
-                }
-            }
-        });
-
-        sumaNormalImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                numCocheNormal++;
+    private void configurarBotonesRestaSuma() {
+        restaNormalImageView.setOnClickListener(v -> {
+            if (numCocheNormal > 0) {
+                numCocheNormal--;
                 numCocheNormalTextView.setText(String.valueOf(numCocheNormal));
             }
         });
-        restaCocheElecImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (numCocheElec > 0) {
-                    numCocheElec--;
-                    numCocheElecTextView.setText(String.valueOf(numCocheElec));
-                }
-            }
+
+        sumaNormalImageView.setOnClickListener(v -> {
+            numCocheNormal++;
+            numCocheNormalTextView.setText(String.valueOf(numCocheNormal));
         });
-        sumaCocheElecImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                numCocheElec++;
+
+        restaCocheElecImageView.setOnClickListener(v -> {
+            if (numCocheElec > 0) {
+                numCocheElec--;
                 numCocheElecTextView.setText(String.valueOf(numCocheElec));
             }
         });
-        restaMinusvImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (numMinusv > 0) {
-                    numMinusv--;
-                    numMinusvTextView.setText(String.valueOf(numMinusv));
-                }
-            }
+
+        sumaCocheElecImageView.setOnClickListener(v -> {
+            numCocheElec++;
+            numCocheElecTextView.setText(String.valueOf(numCocheElec));
         });
-        sumaMinusvImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                numMinusv++;
+
+        restaMinusvImageView.setOnClickListener(v -> {
+            if (numMinusv > 0) {
+                numMinusv--;
                 numMinusvTextView.setText(String.valueOf(numMinusv));
             }
         });
-        restaMotoImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (numMoto > 0) {
-                    numMoto--;
-                    numMotoTextView.setText(String.valueOf(numMoto));
-                }
-            }
+
+        sumaMinusvImageView.setOnClickListener(v -> {
+            numMinusv++;
+            numMinusvTextView.setText(String.valueOf(numMinusv));
         });
-        sumaMotoImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                numMoto++;
+
+        restaMotoImageView.setOnClickListener(v -> {
+            if (numMoto > 0) {
+                numMoto--;
                 numMotoTextView.setText(String.valueOf(numMoto));
             }
         });
-    }
-    private static void guardarCambios(Activity activity) {
-        Parking.PlazaCoches = numCocheNormal;
-        Parking.PlazasElectricos = numCocheElec;
-        Parking.PlazasMinusvalidos = numMinusv;
-        Parking.Motos = numMoto;
 
-        Toast.makeText(activity, "Cambios guardados", Toast.LENGTH_SHORT).show();
+        sumaMotoImageView.setOnClickListener(v -> {
+            numMoto++;
+            numMotoTextView.setText(String.valueOf(numMoto));
+        });
     }
 
-    private static void restablecerValores(Activity activity) {
+    private void guardarCambios() {
+        Parking.actualizarPlazas(numCocheNormal, numCocheElec, numMinusv, numMoto);
+        Toast.makeText(getActivity(), "Cambios guardados", Toast.LENGTH_SHORT).show();
+    }
+
+    private void restablecerValores() {
         numCocheNormal = Parking.PlazaCoches;
         numCocheElec = Parking.PlazasElectricos;
         numMinusv = Parking.PlazasMinusvalidos;
@@ -182,6 +137,6 @@ public class AdminFragment extends Fragment {
         numMinusvTextView.setText(String.valueOf(numMinusv));
         numMotoTextView.setText(String.valueOf(numMoto));
 
-        guardarCambios(activity);
+        guardarCambios();
     }
 }

@@ -44,6 +44,8 @@ public class ParkingFragment extends Fragment {
     private RecyclerView recyclerViewMoto;
     private ProgressBar progressBar;
 
+    public static final String MSG_NORESERVAS = "No hay reservas de este tipo de plaza este día";
+
     public ParkingFragment() {
         // Required empty public constructor
     }
@@ -163,25 +165,25 @@ public class ParkingFragment extends Fragment {
                     RecyclerView.Adapter adapterCoche = new SimpleAdapter(reservasCoche);
                     recyclerViewCoche.setAdapter(adapterCoche);
                     if (reservasCoche.isEmpty()) {
-                        reservasCoche.add("No hay reservas de este tipo de plaza este día");
+                        reservasCoche.add(MSG_NORESERVAS);
                     }
 
                     RecyclerView.Adapter adapterElectrico = new SimpleAdapter(reservasElectrico);
                     recyclerViewElectrico.setAdapter(adapterElectrico);
                     if (reservasElectrico.isEmpty()) {
-                        reservasElectrico.add("No hay reservas de este tipo de plaza este día");
+                        reservasElectrico.add(MSG_NORESERVAS);
                     }
 
                     RecyclerView.Adapter adapterMinusv = new SimpleAdapter(reservasMinusv);
                     recyclerViewMinusv.setAdapter(adapterMinusv);
                     if (reservasMinusv.isEmpty()) {
-                        reservasMinusv.add("No hay reservas de este tipo de plaza este día");
+                        reservasMinusv.add(MSG_NORESERVAS);
                     }
 
                     RecyclerView.Adapter adapterMoto = new SimpleAdapter(reservasMoto);
                     recyclerViewMoto.setAdapter(adapterMoto);
                     if (reservasMoto.isEmpty()) {
-                        reservasMoto.add("No hay reservas de este tipo de plaza este día");
+                        reservasMoto.add(MSG_NORESERVAS);
                     }
                     progressBar.setVisibility(View.INVISIBLE);
                     fechaTextView.setVisibility(View.VISIBLE);
