@@ -1,5 +1,8 @@
 package com.lksnext.parkingmlonbide.Adapters;
 
+import static android.content.ContentValues.TAG;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +33,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String reserva = reservasList.get(position);
+        Log.d(TAG, "Adapter:" + reserva);
         holder.bind(reserva);
     }
 

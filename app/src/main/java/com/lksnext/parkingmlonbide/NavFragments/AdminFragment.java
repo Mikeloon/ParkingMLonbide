@@ -82,6 +82,11 @@ public class AdminFragment extends Fragment {
         numCocheElec = Parking.PlazasElectricos;
         numMinusv = Parking.PlazasMinusvalidos;
         numMoto = Parking.Motos;
+        numCocheNormalTextView.setText(String.valueOf(numCocheNormal));
+        numCocheElecTextView.setText(String.valueOf(numCocheElec));
+        numMinusvTextView.setText(String.valueOf(numMinusv));
+        numMotoTextView.setText(String.valueOf(numMoto));
+
     }
 
     private void configurarBotonesRestaSuma() {
@@ -102,7 +107,6 @@ public class AdminFragment extends Fragment {
                 numCocheNormalTextView.setText(String.valueOf(numCocheNormal));
             }
         });
-
         restaCocheElecImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,7 +116,6 @@ public class AdminFragment extends Fragment {
                 }
             }
         });
-
         sumaCocheElecImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,7 +123,6 @@ public class AdminFragment extends Fragment {
                 numCocheElecTextView.setText(String.valueOf(numCocheElec));
             }
         });
-
         restaMinusvImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,7 +132,6 @@ public class AdminFragment extends Fragment {
                 }
             }
         });
-
         sumaMinusvImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,7 +139,6 @@ public class AdminFragment extends Fragment {
                 numMinusvTextView.setText(String.valueOf(numMinusv));
             }
         });
-
         restaMotoImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,7 +148,6 @@ public class AdminFragment extends Fragment {
                 }
             }
         });
-
         sumaMotoImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,7 +156,6 @@ public class AdminFragment extends Fragment {
             }
         });
     }
-
     private void guardarCambios() {
         Parking.PlazaCoches = numCocheNormal;
         Parking.PlazasElectricos = numCocheElec;
@@ -166,7 +164,6 @@ public class AdminFragment extends Fragment {
 
         Toast.makeText(getActivity(), "Cambios guardados", Toast.LENGTH_SHORT).show();
     }
-
     private void restablecerValores() {
         numCocheNormal = Parking.PlazaCoches;
         numCocheElec = Parking.PlazasElectricos;

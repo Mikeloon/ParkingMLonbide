@@ -43,55 +43,34 @@
         android:background="?attr/selectableItemBackground"
         android:contentDescription="Next_day_btton" />
 
-    <LinearLayout
-        android:id="@+id/LinearLayoutFechaReserva"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/fechaTextView"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="105dp"
-        android:layout_marginTop="40dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:id="@+id/fechaCorrespondienteTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="Reservar plazas"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
-
-
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/LinearLayoutImagenCoche"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/fechaTextView"
+        android:layout_below="@+id/fechaTextView"
         android:layout_alignParentStart="true"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="125dp"
+        android:layout_marginTop="60dp"
         android:background="@drawable/rounded_rectangle"
         android:gravity="center_vertical">
 
         <ImageView
             android:id="@+id/imgCoche"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:contentDescription="Vector Asset"
             android:src="@drawable/baseline_directions_car_24" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/LinearLayoutRealizarReservaCoche"
-        android:layout_width="73dp"
-        android:layout_height="29dp"
-        android:layout_below="@id/LinearLayoutImagenCoche"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="190dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/fechaTextView"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="70dp"
+        android:layout_toEndOf="@+id/LinearLayoutImagenCoche"
         android:background="@drawable/rounded_rectangle"
         android:gravity="center_vertical">
 
@@ -104,10 +83,10 @@
 
         <TextView
             android:id="@+id/txtRealizarReservaCoche"
-            android:layout_width="68dp"
+            android:layout_width="wrap_content"
             android:layout_height="34dp"
             android:padding="10dp"
-            android:text="Reservar"
+            android:text="Reservar plaza para coche"
             android:textColor="@android:color/white"
             android:textSize="10sp" />
     </LinearLayout>
@@ -116,29 +95,29 @@
         android:id="@+id/LinearLayoutImagenElectrico"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/fechaTextView"
-        android:layout_marginStart="65dp"
-        android:layout_marginTop="125dp"
-        android:layout_toEndOf="@+id/LinearLayoutImagenCoche"
+        android:layout_below="@+id/LinearLayoutImagenCoche"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="70dp"
         android:background="@drawable/rounded_rectangle"
         android:gravity="center_vertical">
 
         <ImageView
-            android:id="@+id/imgElec"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:id="@+id/imgEle"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:contentDescription="Vector Asset"
             android:src="@drawable/baseline_electric_car_24" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/LinearLayoutRealizarReservaElec"
-        android:layout_width="73dp"
-        android:layout_height="29dp"
-        android:layout_below="@id/LinearLayoutImagenElectrico"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_toEndOf="@+id/LinearLayoutRealizarReservaCoche"
+        android:layout_width="190dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/LinearLayoutRealizarReservaCoche"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="85dp"
+        android:layout_toEndOf="@+id/LinearLayoutImagenElectrico"
         android:background="@drawable/rounded_rectangle"
         android:gravity="center_vertical">
 
@@ -151,10 +130,10 @@
 
         <TextView
             android:id="@+id/txtRealizarReservaElec"
-            android:layout_width="68dp"
+            android:layout_width="161dp"
             android:layout_height="34dp"
             android:padding="10dp"
-            android:text="Reservar"
+            android:text="Reservar plaza para electrico"
             android:textColor="@android:color/white"
             android:textSize="10sp" />
     </LinearLayout>
@@ -163,29 +142,29 @@
         android:id="@+id/LinearLayoutImagenMinusv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/fechaTextView"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="125dp"
-        android:layout_toEndOf="@+id/LinearLayoutImagenElectrico"
+        android:layout_below="@+id/LinearLayoutImagenElectrico"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="70dp"
         android:background="@drawable/rounded_rectangle"
         android:gravity="center_vertical">
 
         <ImageView
             android:id="@+id/imgMinusv"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:contentDescription="Vector Asset"
             android:src="@drawable/baseline_accessible_24" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/LinearLayoutRealizarReservaMinusv"
-        android:layout_width="73dp"
-        android:layout_height="29dp"
-        android:layout_below="@id/LinearLayoutImagenMinusv"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_toEndOf="@+id/LinearLayoutRealizarReservaElec"
+        android:layout_width="190dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/LinearLayoutRealizarReservaElec"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="90dp"
+        android:layout_toEndOf="@+id/LinearLayoutImagenMinusv"
         android:background="@drawable/rounded_rectangle"
         android:gravity="center_vertical">
 
@@ -198,10 +177,10 @@
 
         <TextView
             android:id="@+id/txtRealizarReservaMinusv"
-            android:layout_width="68dp"
+            android:layout_width="wrap_content"
             android:layout_height="34dp"
             android:padding="10dp"
-            android:text="Reservar"
+            android:text="Reservar plaza para minusvalido"
             android:textColor="@android:color/white"
             android:textSize="10sp" />
     </LinearLayout>
@@ -210,30 +189,29 @@
         android:id="@+id/LinearLayoutImagenMoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/fechaTextView"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="125dp"
-        android:layout_toEndOf="@+id/LinearLayoutImagenMinusv"
+        android:layout_below="@+id/LinearLayoutImagenMinusv"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="70dp"
         android:background="@drawable/rounded_rectangle"
         android:gravity="center_vertical">
 
         <ImageView
-            android:id="@+id/imgMoto"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:id="@+id/imgMotoP"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:contentDescription="Vector Asset"
             android:src="@drawable/baseline_sports_motorsports_24" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/LinearLayoutRealizarReservaMoto"
-        android:layout_width="73dp"
-        android:layout_height="29dp"
-        android:layout_below="@id/LinearLayoutImagenMoto"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="20dp"
-        android:layout_toEndOf="@+id/LinearLayoutRealizarReservaMinusv"
+        android:layout_width="190dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/LinearLayoutRealizarReservaMinusv"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="90dp"
+        android:layout_toEndOf="@+id/LinearLayoutImagenMoto"
         android:background="@drawable/rounded_rectangle"
         android:gravity="center_vertical">
 
@@ -246,10 +224,10 @@
 
         <TextView
             android:id="@+id/txtRealizarReservaMoto"
-            android:layout_width="68dp"
+            android:layout_width="wrap_content"
             android:layout_height="34dp"
             android:padding="10dp"
-            android:text="Reservar"
+            android:text="Reservar plaza para moto"
             android:textColor="@android:color/white"
             android:textSize="10sp" />
     </LinearLayout>

@@ -1,4 +1,4 @@
-package com.lksnext.parkingmlonbide.RegisterLogin;
+package com.lksnext.parkingmlonbide.view;
 
 import static android.content.ContentValues.TAG;
 
@@ -32,8 +32,9 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
-import com.lksnext.parkingmlonbide.NavFragments.HomePage;
 import com.lksnext.parkingmlonbide.R;
+import com.lksnext.parkingmlonbide.view.HomePage;
+import com.lksnext.parkingmlonbide.view.RegisterActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,14 +69,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (!emailEditText.getText().toString().isEmpty() && !passwordEditText.getText().toString().isEmpty()){
                     mAuth.signInWithEmailAndPassword(
-                        emailEditText.getText().toString(),
+                            emailEditText.getText().toString(),
                             passwordEditText.getText().toString()).addOnCompleteListener(task -> {
-                                if (task.isSuccessful()){
-                                    Toast.makeText(MainActivity.this, "Bienvenido " + emailEditText.getText().toString().split("@")[0] + "!", Toast.LENGTH_SHORT).show();
-                                    openHomepage();
-                                } else {
-                                    Toast.makeText(MainActivity.this, "Error al iniciar sesion", Toast.LENGTH_SHORT).show();
-                                }
+                        if (task.isSuccessful()){
+                            Toast.makeText(MainActivity.this, "Bienvenido " + emailEditText.getText().toString().split("@")[0] + "!", Toast.LENGTH_SHORT).show();
+                            openHomepage();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Error al iniciar sesion", Toast.LENGTH_SHORT).show();
+                        }
                     });
                 } else{
                     Toast.makeText(MainActivity.this, "Rellene los campos correctamente", Toast.LENGTH_SHORT).show();
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken(getString(R.string.default_web_client_id))
+                        .requestIdToken("763306789736-9e3e7iumrht4mp0aafrpmesg64pakmoh.apps.googleusercontent.com")
                         .requestEmail()
                         .build();
                 GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(MainActivity.this, gso);
@@ -138,57 +139,56 @@ public class MainActivity extends AppCompatActivity {
                 // Autenticar con Firebase usando el token de ID de Google
                 AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
                 mAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
 
-                                    // Autenticación con cuenta de Google exitosa
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    String uid = mAuth.getCurrentUser().getUid();
-                                    String name = user.getDisplayName();
+                            // Autenticación con cuenta de Google exitosa
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            String uid = mAuth.getCurrentUser().getUid();
+                            String name = user.getDisplayName();
 
-                                    db.collection("users").document(uid).get()
-                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                    if (task.isSuccessful()) {
-                                                        DocumentSnapshot document = task.getResult();
-                                                        if (document.exists()) {
-                                                            Log.d(TAG, "Usuario ya registrado.");
-                                                        } else {
-                                                            Map<String, Object> userMap = new HashMap<>();
-                                                            userMap.put("name", name);
-                                                            userMap.put("email", user.getEmail());
-                                                            userMap.put("reservas", new ArrayList<>());
-                                                            userMap.put("role","User");
+                            db.collection("users").document(uid).get()
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document = task.getResult();
+                                                if (document.exists()) {
+                                                    Log.d(TAG, "Usuario ya registrado.");
+                                                } else {
+                                                    Map<String, Object> userMap = new HashMap<>();
+                                                    userMap.put("name", name);
+                                                    userMap.put("email", user.getEmail());
+                                                    userMap.put("role","User");
 
-                                                            db.collection("users").document(uid).set(userMap)
-                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                        @Override
-                                                                        public void onSuccess(Void aVoid) {
-                                                                            Toast.makeText(MainActivity.this, "Bienvenido " + name + "!", Toast.LENGTH_SHORT).show();
-                                                                        }
-                                                                    })
-                                                                    .addOnFailureListener(new OnFailureListener() {
-                                                                        @Override
-                                                                        public void onFailure(@NonNull Exception e) {
-                                                                            Log.d(TAG, "Error al guardar el usuario en Firestore");
-                                                                        }
-                                                                    });
-                                                        }
-                                                    } else {
-                                                        Log.d(TAG, "Error al verificar la existencia del usuario en Firestore");
-                                                    }
+                                                    db.collection("users").document(uid).set(userMap)
+                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void aVoid) {
+                                                                    Toast.makeText(MainActivity.this, "Bienvenido " + name + "!", Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            })
+                                                            .addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception e) {
+                                                                    Log.d(TAG, "Error al guardar el usuario en Firestore");
+                                                                }
+                                                            });
                                                 }
-                                            });
-                                    Toast.makeText(MainActivity.this, "Bienvenido " + name + "!", Toast.LENGTH_SHORT).show();
-                                    openHomepage();
-                                } else {
-                                    // Fallo en la autenticación con cuenta de Google
-                                    Toast.makeText(MainActivity.this, "Error al iniciar sesión con cuenta de Google", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+                                            } else {
+                                                Log.d(TAG, "Error al verificar la existencia del usuario en Firestore");
+                                            }
+                                        }
+                                    });
+                            Toast.makeText(MainActivity.this, "Bienvenido " + name + "!", Toast.LENGTH_SHORT).show();
+                            openHomepage();
+                        } else {
+                            // Fallo en la autenticación con cuenta de Google
+                            Toast.makeText(MainActivity.this, "Error al iniciar sesión con cuenta de Google", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             } catch (ApiException e) {
                 // Error al obtener la cuenta de Google
                 Toast.makeText(MainActivity.this, "Error al obtener la cuenta de Google", Toast.LENGTH_SHORT).show();

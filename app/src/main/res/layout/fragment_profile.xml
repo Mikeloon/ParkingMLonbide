@@ -52,6 +52,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lblCorreo" />
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
     <TextView
         android:id="@+id/reservasLbl"
         android:layout_width="wrap_content"
@@ -75,6 +87,7 @@
         app:layout_constraintTop_toBottomOf="@+id/reservasLbl" />
 
     <LinearLayout
+        android:id="@+id/linearLayout4"
         android:layout_width="374dp"
         android:layout_height="367dp"
         android:layout_margin="16dp"

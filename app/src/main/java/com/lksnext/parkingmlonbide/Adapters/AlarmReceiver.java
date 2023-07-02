@@ -17,9 +17,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
-import com.lksnext.parkingmlonbide.NavFragments.HomePage;
+import com.lksnext.parkingmlonbide.view.HomePage;
 import com.lksnext.parkingmlonbide.R;
-import com.lksnext.parkingmlonbide.RegisterLogin.MainActivity;
 
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
@@ -32,25 +31,27 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, i, PendingIntent.FLAG_MUTABLE);
-        Log.d(TAG,"Intent creado hecho");
+        Log.d(TAG, "Intent creado hecho");
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "reservaNotification")
                 .setSmallIcon(R.drawable.notification_icon)
                 .setContentTitle("Tu reserva está a punto de finalizar!")
-                .setContentText("Quedan " + remainingMinutes +" minutos para que termine tu reserva.")
+                .setContentText("Quedan " + remainingMinutes + " minutos para que termine tu reserva.")
                 .setAutoCancel(true)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent);
 
-        Log.d(TAG,"builder hecho");
+        Log.d(TAG, "builder hecho");
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.POST_NOTIFICATIONS},101);
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Intent permissionIntent = new Intent(context, PermissionRequestActivity.class);
+            permissionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(permissionIntent);
         }
-        notificationManagerCompat.notify(123,builder.build());
-        Log.d(TAG,"notificacion hecho");
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            notificationManagerCompat.notify(123, builder.build());
+            Log.d(TAG,"notificacion hecho");
+        }
 
     }
 }

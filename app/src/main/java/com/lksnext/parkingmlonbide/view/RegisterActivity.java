@@ -1,4 +1,4 @@
-package com.lksnext.parkingmlonbide.RegisterLogin;
+package com.lksnext.parkingmlonbide.view;
 
 import static android.content.ContentValues.TAG;
 
@@ -18,6 +18,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.lksnext.parkingmlonbide.R;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.lksnext.parkingmlonbide.view.MainActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,7 +58,6 @@ public class RegisterActivity extends AppCompatActivity {
                             Map<String, Object> userMap = new HashMap<>();
                             userMap.put("name", username.getText().toString());
                             userMap.put("email", email.getText().toString());
-                            userMap.put("reservas", new ArrayList<>());
                             userMap.put("role","User");
                             db.collection("users").document(uid).set(userMap)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -73,7 +73,7 @@ public class RegisterActivity extends AppCompatActivity {
                                         }
                                     });
 
-                            Intent goToLogin = new Intent(RegisterActivity.this,MainActivity.class);
+                            Intent goToLogin = new Intent(RegisterActivity.this, MainActivity.class);
                             Toast.makeText(RegisterActivity.this, "Registro completado", Toast.LENGTH_SHORT).show();
                             startActivity(goToLogin);
                         } else {

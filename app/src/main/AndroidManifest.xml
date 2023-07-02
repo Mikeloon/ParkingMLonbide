@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
     <application
         android:allowBackup="true"
@@ -19,7 +20,7 @@
         android:theme="@style/Theme.ParkingMLonbide"
         tools:targetApi="31">
         <activity
-            android:name="com.lksnext.parkingmlonbide.RegisterLogin.MainActivity"
+            android:name="com.lksnext.parkingmlonbide.view.MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,11 +28,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".Adapters.PermissionRequestActivity" />
+
         <activity
-            android:name="com.lksnext.parkingmlonbide.NavFragments.HomePage"
+            android:name="com.lksnext.parkingmlonbide.view.HomePage"
             android:exported="false" />
         <activity
-            android:name="com.lksnext.parkingmlonbide.RegisterLogin.RegisterActivity"
+            android:name="com.lksnext.parkingmlonbide.view.RegisterActivity"
             android:exported="false"/>
         
         <receiver android:name=".Adapters.AlarmReceiver"/>

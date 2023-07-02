@@ -2,7 +2,12 @@ package com.lksnext.parkingmlonbide.NavFragments;
 
 import static android.content.ContentValues.TAG;
 
-import android.os.AsyncTask;
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,13 +34,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.lksnext.parkingmlonbide.Adapters.AlarmReceiver;
 import com.lksnext.parkingmlonbide.DataClasses.Parking;
 import com.lksnext.parkingmlonbide.DataClasses.Reserva;
 import com.lksnext.parkingmlonbide.DataClasses.TipoEstacionamiento;
@@ -55,25 +62,22 @@ import java.util.Map;
 
 public class BookingFragment extends Fragment {
 
-    private TextView toolbarTitle;
     private FirebaseFirestore db;
     private TextView fechaTextView;
     private Calendar calendar;
-    private TextView fechaCorrespondienteTextView;
-    private LinearLayout linearLayout;
 
-    String[] horasInicio = {"08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"};
-    String[] horasFin = {"08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "15:32"};
+
+    String[] horasInicio = {"08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:30"};
+    String[] horasFin = {"08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:10", "18:35"};
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_booking, container, false);
 
+        createNotificationChannel();
         db = FirebaseFirestore.getInstance();
         fechaTextView = view.findViewById(R.id.fechaTextView);
-        fechaCorrespondienteTextView = view.findViewById(R.id.fechaCorrespondienteTextView);
-        linearLayout = view.findViewById(R.id.LinearLayoutFechaReserva);
         LinearLayout linearLayoutReservaCoche = view.findViewById(R.id.LinearLayoutRealizarReservaCoche);
         LinearLayout linearLayoutReservaElectrico = view.findViewById(R.id.LinearLayoutRealizarReservaElec);
         LinearLayout linearLayoutReservaMinusv = view.findViewById(R.id.LinearLayoutRealizarReservaMinusv);
@@ -128,6 +132,19 @@ public class BookingFragment extends Fragment {
         return view;
     }
 
+    private void createNotificationChannel(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "ReservaReminderChannel";
+            String description = "Channel for booking reminder";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("reservaNotification",name,importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getContext().getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
     private void actualizarFechaActual() {
         SimpleDateFormat formato = new SimpleDateFormat("dd/MMM/yyyy");
         Date fechaActual = calendar.getTime();
@@ -164,7 +181,6 @@ public class BookingFragment extends Fragment {
         Spinner comboBoxHoraFin = popupView.findViewById(R.id.comboBoxHoraFin);
 
         tituloPopup.setText(tipoReserva);
-        // Configura los datos para los ComboBoxes comboBoxHoraInicio y comboBoxHoraFin
 
         ArrayAdapter<String> horaInicioAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, horasInicio);
         comboBoxHoraInicio.setAdapter(horaInicioAdapter);
@@ -175,51 +191,12 @@ public class BookingFragment extends Fragment {
 
         String tipoPlaza = getTipoPlaza(tipoReserva).toString();
         String fechaReserva = fechaTextView.getText().toString();
-        String documentoFecha = fechaReserva.replace("/", "-");
 
         Spinner comboBoxPlaza = popupView.findViewById(R.id.comboBoxPlaza);
-        obtenerIdsPlazas(documentoFecha, tipoPlaza, new OnIdsPlazasObtenidosListener() {
-            @Override
-            public void onIdsPlazasObtenidos(ArrayList<String> idsPlazas) {
-                ArrayAdapter<String> plazaAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, idsPlazas);
-                comboBoxPlaza.setAdapter(plazaAdapter);
-            }
-        });
 
-        db.collection("Parking").document(documentoFecha)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Log.d(TAG, "El documento ya existe");
-                            } else {
-                                // El documento no existe, crearlo
-                                db.collection("Parking").document(documentoFecha)
-                                        .set(new HashMap<String, Object>())
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                crearPlazas(documentoFecha);
-                                                Log.d(TAG, "Documento creado correctamente");
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                // Error al crear el documento
-                                                Log.d(TAG, "Error al crear el documento de fecha en Parking");
-                                            }
-                                        });
-                            }
-                        } else {
-                            // Error al obtener el documento
-                            Log.d(TAG, "Error al obtener el documento de fecha en Parking");
-                        }
-                    }
-                });
+        ArrayList<String> plazasIds = obtenerIdsPlazas(tipoPlaza);
+        ArrayAdapter<String> plazaAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, plazasIds);
+        comboBoxPlaza.setAdapter(plazaAdapter);
 
         comboBoxHoraInicio.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -292,8 +269,6 @@ public class BookingFragment extends Fragment {
                 String horaInicio = comboBoxHoraInicio.getSelectedItem().toString();
                 String horaFin = comboBoxHoraFin.getSelectedItem().toString();
                 TipoEstacionamiento plaza = getTipoPlaza(tipoReserva);
-                // Check if the reservation is valid
-                boolean reservaValida = esReservaValida(fechaReserva,horaInicio, horaFin);
                 comprobarDisponibilidad(horaInicio, horaFin, fechaReserva, plaza, comboBoxPlaza.getSelectedItem().toString(), new DisponibilidadCallback() {
                     @Override
                     public void onDisponibilidadChecked(boolean disponible) {
@@ -305,28 +280,13 @@ public class BookingFragment extends Fragment {
                                 fechaDate = dateFormat.parse(fechaReserva);
                             } catch (ParseException e) {
                             }
-                            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
                             Reserva reservation = new Reserva(comboBoxPlaza.getSelectedItem().toString(),fechaDate, horaInicio, horaFin, plaza);
                             Long rid = reservation.getId();
 
                             // Add the reservation to the appropriate document in the "parking" collection
-                            agregarReserva(comboBoxPlaza,rid,tipoPlaza,fechaReserva,horaInicio,horaFin);
+                            agregarReserva(comboBoxPlaza,rid,tipoPlaza,fechaReserva,horaInicio,horaFin, reservation);
 
-                            DocumentReference documentReference = db.collection("users").document(uid);
-                            documentReference.update("reservas", FieldValue.arrayUnion(reservation))
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Toast.makeText(getActivity(), "Reserva en el dia:" + fechaReserva +" confirmada", Toast.LENGTH_SHORT).show();
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(getActivity(), "Error al guardar la reserva", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
                         } else {
                             // La plaza no está disponible
                             Toast.makeText(getActivity(), "La plaza seleccionada ya está reservada en ese horario", Toast.LENGTH_SHORT).show();
@@ -415,140 +375,110 @@ public class BookingFragment extends Fragment {
         return tipoReserva;
     }
 
-    private void crearPlazas(String documentoFecha) {
-        crearColeccionPlazas(documentoFecha, "Coche", Parking.PlazaCoches);
-        crearColeccionPlazas(documentoFecha, "Electrico", Parking.PlazasElectricos);
-        crearColeccionPlazas(documentoFecha, "Minusvalido", Parking.PlazasMinusvalidos);
-        crearColeccionPlazas(documentoFecha, "Moto", Parking.Motos);
-    }
-
-    private void crearColeccionPlazas(String documentoFecha, String tipoPlaza, int cantidad) {
-        Map<String, Object> plazaData = new HashMap<>();
-        plazaData.put("reservas", new ArrayList<>());
-
-        for (int i = 0; i < cantidad; i++) {
-            String plazaId = tipoPlaza.replaceAll("\\s+", "") + (i + 1);
-            crearPlazaEnFirestore(documentoFecha, tipoPlaza, plazaId, plazaData);
+    private ArrayList<String> obtenerIdsPlazas(String tipoPlaza) {
+        ArrayList<String> idsPlazas = new ArrayList<>();
+        String plazaId = "";
+        switch (tipoPlaza) {
+            case "Coche":
+                for (int i = 0; i < Parking.PlazaCoches; i++) {
+                    plazaId = "Coche" + i;
+                    idsPlazas.add(plazaId);
+                }
+                break;
+            case "Electrico":
+                for (int i = 0; i < Parking.PlazasElectricos; i++) {
+                    plazaId = "Electrico" + i;
+                    idsPlazas.add(plazaId);
+                }
+                break;
+            case "Minusvalido":
+                for (int i = 0; i < Parking.PlazasMinusvalidos; i++) {
+                    plazaId = "Minusvalido" + i;
+                    idsPlazas.add(plazaId);
+                }
+                break;
+            case "Moto":
+                for (int i = 0; i < Parking.Motos; i++) {
+                    plazaId = "Moto" + i;
+                    idsPlazas.add(plazaId);
+                }
+                break;
+            default:
+                break;
         }
+
+        return idsPlazas;
     }
 
-    private void crearPlazaEnFirestore(String documentoFecha, String tipoPlaza, String plazaId, Map<String, Object> plazaData) {
-        db.collection("Parking").document(documentoFecha).collection(tipoPlaza).document(plazaId)
-                .set(plazaData)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, plazaId + " creada correctamente en " + tipoPlaza);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Error al crear " + plazaId + " en " + tipoPlaza + ": " + e.getMessage());
-                    }
-                });
-    }
-
-    private void obtenerIdsPlazas(String documentoFecha, String tipoPlaza, OnIdsPlazasObtenidosListener listener) {
-        db.collection("Parking").document(documentoFecha).collection(tipoPlaza)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        ArrayList<String> idsPlazas = new ArrayList<>();
-                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                            String plazaId = documentSnapshot.getId();
-                            idsPlazas.add(plazaId);
-                        }
-                        listener.onIdsPlazasObtenidos(idsPlazas);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Error al obtener los ids de las plazas
-                        listener.onIdsPlazasObtenidos(new ArrayList<>());
-                    }
-                });
-    }
-
-    private void agregarReserva(Spinner comboBoxPlaza, Long rid, String tipoPlaza, String fechaReserva, String horaInicio, String horaFin) {
-        String documentoFecha = fechaReserva.replace("/", "-");
-
+    private void agregarReserva(Spinner comboBoxPlaza, Long rid, String tipoPlaza, String fechaReserva, String horaInicio, String horaFin, Reserva reserva) {
         // Obtener el ID de la plaza seleccionada
         String idPlaza = comboBoxPlaza.getSelectedItem().toString();
 
         HashMap<String, Object> reservaData = new HashMap<>();
-        reservaData.put("id", rid);  // ID de la plaza
-        reservaData.put("usuario", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());  // Nombre de usuario
-        reservaData.put("intervaloHoras", horaInicio + "-" + horaFin);  // Intervalo de horas
+        reservaData.put("FechaReserva", fechaReserva);
+        reservaData.put("usuarioId", FirebaseAuth.getInstance().getCurrentUser().getUid());  // Nombre de usuario
+        reservaData.put("intervaloHoras", horaInicio + "-" + horaFin);
+        reservaData.put("tipoPlaza", tipoPlaza);
+        reservaData.put("plazaId", idPlaza);
 
-        // Actualizar la reserva en la colección "Parking"
-        db.collection("Parking").document(documentoFecha)
-                .collection(tipoPlaza).document(idPlaza)
-                .update("reservas", FieldValue.arrayUnion(reservaData))
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "Reserva agregada correctamente");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Error al agregar la reserva");
-                    }
-                });
+        DocumentReference docRef = db.collection("Parking").document(String.valueOf(rid));
+
+        docRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Log.d(TAG, "El documento ya existe");
+                } else {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("reserva", reservaData);
+
+                    docRef.set(data)
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(getActivity(), "Reserva realizada correctamente", Toast.LENGTH_SHORT).show();
+                                setupAlarm(reserva,getContext());
+                            })
+                            .addOnFailureListener(e -> Log.d(TAG, "Error al crear el documento de reserva en Parking"));
+                }
+            } else {
+                Log.d(TAG, "Error al obtener el documento de reserva en Parking");
+            }
+        });
     }
 
     private void comprobarDisponibilidad(String horaInicio, String horaFin, String fechaReserva, TipoEstacionamiento tipoPlaza, String plazaId, DisponibilidadCallback callback) {
-        String documentoFecha = fechaReserva.replace("/", "-");
 
         // Obtener el intervalo de tiempo seleccionado
         int horaInicioSeleccionada = obtenerHora(horaInicio);
         int horaFinSeleccionada = obtenerHora(horaFin);
 
         // Consultar todas las reservas existentes para la plaza y la fecha seleccionadas
-        db.collection("Parking").document(documentoFecha)
-                .collection(String.valueOf(tipoPlaza))
-                .document(plazaId)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            List<Map<String, Object>> reservas = (List<Map<String, Object>>) documentSnapshot.get("reservas");
-                            if (reservas != null) {
-                                for (Map<String, Object> reserva : reservas) {
-                                    String intervaloHoras = (String) reserva.get("intervaloHoras");
-                                    String horaInicioReserva = intervaloHoras.split("-")[0];
-                                    String horaFinReserva = intervaloHoras.split("-")[1];
+        Query ReservasPlaza = db.collection("Parking").whereEqualTo("reserva.plazaId", plazaId).whereEqualTo("reserva.FechaReserva",fechaReserva);
 
-                                    // Obtener las horas de inicio y fin de la reserva actual como enteros
-                                    int horaInicioReservaInt = obtenerHora(horaInicioReserva);
-                                    int horaFinReservaInt = obtenerHora(horaFinReserva);
-
-                                    // Comprobar si el intervalo de la reserva actual se superpone con el intervalo seleccionado
-                                    if ((horaInicioSeleccionada <= horaFinReservaInt && horaInicioSeleccionada >= horaInicioReservaInt) || (horaFinSeleccionada >= horaInicioReservaInt && horaInicioSeleccionada <= horaFinReservaInt)) {
-                                        // Hay una reserva existente que se superpone con el intervalo seleccionado
-                                        callback.onDisponibilidadChecked(false);
-                                        return;
-                                    }
-                                }
+        ReservasPlaza.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    if (task.getResult() != null){
+                        Log.d(TAG,task.getResult().toString());
+                        for (QueryDocumentSnapshot ReservaU: task.getResult()){
+                            Map<String, Object> reserva = (Map<String, Object>) ReservaU.getData().get("reserva");
+                            Log.d(TAG,reserva.toString());
+                            String intervaloHoras = (String) reserva.get("intervaloHoras");
+                            int horaInicioReservaInt = obtenerHora(intervaloHoras.split("-")[0]);
+                            int horaFinReservaInt = obtenerHora(intervaloHoras.split("-")[1]);
+                            if ((horaInicioSeleccionada <= horaFinReservaInt && horaInicioSeleccionada >= horaInicioReservaInt) || (horaFinSeleccionada >= horaInicioReservaInt && horaInicioSeleccionada <= horaFinReservaInt)) {
+                                // Hay una reserva existente que se superpone con el intervalo seleccionado
+                                callback.onDisponibilidadChecked(false);
+                                return;
                             }
-                            callback.onDisponibilidadChecked(true);
-                        } else {
-                            callback.onDisponibilidadChecked(true);
                         }
+                        callback.onDisponibilidadChecked(true);
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getActivity(), "Error al comprobar la disponibilidad de la plaza", Toast.LENGTH_SHORT).show();
-                        callback.onDisponibilidadChecked(false);
-                    }
-                });
+                }else {
+                    callback.onDisponibilidadChecked(false);
+                }
+            }
+        });
     }
 
     private int obtenerHora(String hora) {
@@ -578,9 +508,50 @@ public class BookingFragment extends Fragment {
         return horaExacta;
     }
 
-    // Interfaz para el callback de los ids de las plazas obtenidos
-    public interface OnIdsPlazasObtenidosListener {
-        void onIdsPlazasObtenidos(ArrayList<String> idsPlazas);
+    private void setupAlarm(Reserva reserva, Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Date fechaReserva = reserva.getFechaReserva();
+        String horaFinReserva = reserva.getHoraFin();
+
+        String[] horaMinutos = horaFinReserva.split(":");
+        int hora = Integer.parseInt(horaMinutos[0]);
+        int minutos = Integer.parseInt(horaMinutos[1]);
+
+        Calendar currentTime = Calendar.getInstance();
+        int currentHour = currentTime.get(Calendar.HOUR_OF_DAY);
+        int currentMinutes = currentTime.get(Calendar.MINUTE);
+
+        Calendar reservaTime = Calendar.getInstance();
+        reservaTime.setTime(fechaReserva);
+        reservaTime.set(Calendar.HOUR_OF_DAY, hora);
+        reservaTime.set(Calendar.MINUTE, minutos);
+
+        long remainingMilliseconds = reservaTime.getTimeInMillis() - currentTime.getTimeInMillis();
+        int remainingMinutes = (int) (remainingMilliseconds / (1000 * 60));
+
+        if (remainingMinutes <= 0) {
+            Log.d(TAG,"Reserva terminada");
+        }
+        else if (remainingMinutes <= 15) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(fechaReserva);
+            cal.set(Calendar.HOUR_OF_DAY, hora);
+            cal.set(Calendar.MINUTE, minutos);
+            cal.set(Calendar.SECOND, 0);
+            cal.add(Calendar.MINUTE, -15);
+
+            Intent intent = new Intent(context, AlarmReceiver.class);
+            intent.putExtra("remainingMinutes", remainingMinutes);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context,0, intent, PendingIntent.FLAG_IMMUTABLE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+                Log.d(TAG,"alarma creada");
+            } else {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+                Log.d(TAG,"alarma creada");
+            }
+        }
     }
 
     public interface DisponibilidadCallback {

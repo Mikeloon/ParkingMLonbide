@@ -2,13 +2,7 @@ package com.lksnext.parkingmlonbide.NavFragments;
 
 import static android.content.ContentValues.TAG;
 
-import android.app.AlarmManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,22 +14,26 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.lksnext.parkingmlonbide.Adapters.AlarmReceiver;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.lksnext.parkingmlonbide.Adapters.ReservaAdapter;
 import com.lksnext.parkingmlonbide.DataClasses.Reserva;
 import com.lksnext.parkingmlonbide.DataClasses.TipoEstacionamiento;
 import com.lksnext.parkingmlonbide.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +45,7 @@ public class ProfileFragment extends Fragment {
     private ReservaAdapter reservaAdapter;
 
     private View v;
+    private ProgressBar progressBar;
 
     private TextView userTxt;
     private TextView mailTxt;
@@ -67,9 +66,9 @@ public class ProfileFragment extends Fragment {
         mailTxt = (TextView) v.findViewById(R.id.Correotxt);
         reservasTxt = (TextView) v.findViewById(R.id.reservastxt);
         recyclerViewReservas = v.findViewById(R.id.recyclerViewReservas);
+        progressBar = v.findViewById(R.id.progressBar);
 
         recyclerViewReservas.setLayoutManager(new LinearLayoutManager(getContext()));
-        createNotificationChannel();
         db = FirebaseFirestore.getInstance();
 
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -85,20 +84,15 @@ public class ProfileFragment extends Fragment {
         buscarReservasUsuario(uid, userTxt, mailTxt, reservasTxt, recyclerViewReservas, v);
     }
 
-    private void createNotificationChannel(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "ReservaReminderChannel";
-            String description = "Channel for booking reminder";
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel("reservaNotification",name,importance);
-            channel.setDescription(description);
-
-            NotificationManager notificationManager = getContext().getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
-
     private void buscarReservasUsuario(String uid, TextView userTxt, TextView mailTxt, TextView reservasTxt, RecyclerView recyclerViewReservas, View v){
+        progressBar.setVisibility(View.VISIBLE);
+
+        // Ocultar otros elementos relevantes
+        userTxt.setVisibility(View.INVISIBLE);
+        mailTxt.setVisibility(View.INVISIBLE);
+        reservasTxt.setVisibility(View.INVISIBLE);
+        recyclerViewReservas.setVisibility(View.INVISIBLE);
+
         db.collection("users").document(uid).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -109,93 +103,59 @@ public class ProfileFragment extends Fragment {
                             String email = documentSnapshot.getString("email");
                             userTxt.setText(username);
                             mailTxt.setText(email);
-
-                            List<Reserva> reservas = new ArrayList<>();
-                            List<Map<String, Object>> reservasList = (List<Map<String, Object>>) documentSnapshot.get("reservas");
-                            if (reservasList != null) {
-                                for (Map<String, Object> reservaData : reservasList) {
-                                    // Obtener los valores de los campos de la reserva
-                                    com.google.firebase.Timestamp timestamp = (com.google.firebase.Timestamp) reservaData.get("fechaReserva");
-                                    Date fechaReserva = timestamp.toDate();
-                                    String horaInicio = (String) reservaData.get("horaInicio");
-                                    String horaFin = (String) reservaData.get("horaFin");
-                                    TipoEstacionamiento tipoPlaza = TipoEstacionamiento.valueOf((String) reservaData.get("tipoPlaza"));
-                                    Long rid = (long) reservaData.get("id");
-                                    String plazaId = (String) reservaData.get("plazaId");
-                                    // Crear objeto Reserva y agregarlo a la lista
-                                    Reserva reserva = new Reserva(plazaId,rid,fechaReserva, horaInicio, horaFin, tipoPlaza);
-                                    reservas.add(reserva);
-                                }
-                            }
-                            if (reservas != null && !reservas.isEmpty()) {
-                                reservasTxt.setVisibility(View.INVISIBLE);
-                                SimpleDateFormat formato = new SimpleDateFormat("dd/MMM/yyyy");
-                                reservaAdapter = new ReservaAdapter(reservas, formato, v, getParentFragmentManager());
-                                recyclerViewReservas.setAdapter(reservaAdapter);
-                                setupAlarms(reservas,getContext());
-                            }else {
-                                recyclerViewReservas.setVisibility(View.GONE);
-                                SimpleDateFormat formato = new SimpleDateFormat("dd/MMM/yyyy");
-                                reservasTxt.setText("No tienes reservas");
-                                reservaAdapter = new ReservaAdapter(new ArrayList<>(), formato, v, getParentFragmentManager());
-                                recyclerViewReservas.setAdapter(reservaAdapter);
-                            }
-                        } else {
-                            // El documento no existe o aún no se ha creado
-                            Log.d(TAG, "El documento no existe");
+                            userTxt.setVisibility(View.VISIBLE);
+                            mailTxt.setVisibility(View.VISIBLE);
                         }
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Ocurrió un error al obtener el documento
-                        Log.e(TAG, "Error al obtener el documento del usuario", e);
-                    }
                 });
-    }
 
-    private void setupAlarms(List<Reserva> reservas, Context context) {
+        Query UsuarioReservas = db.collection("Parking").whereEqualTo("reserva.usuarioId", uid);
+        List<Reserva> reservaList = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
 
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        UsuarioReservas.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    if (task.getResult() != null){
+                        for (QueryDocumentSnapshot ReservaU: task.getResult()){
+                            Map<String, Object> reserva = (Map<String, Object>) ReservaU.getData().get("reserva");
+                            Log.d(TAG,reserva.toString());
+                            String plazaId = (String) reserva.get("plazaId");
+                            Long id = Long.valueOf(ReservaU.getId());
+                            String fecha = (String) reserva.get("FechaReserva");
+                            Date date = null;
+                            try {
+                                date = sdf.parse(fecha);
+                                System.out.println("Fecha parseada: " + date);
+                            } catch (ParseException e) {
+                                System.out.println("Error al parsear la fecha: " + e.getMessage());
+                            }
+                            String intervaloHoras = (String) reserva.get("intervaloHoras");
+                            TipoEstacionamiento tipoPlaza = TipoEstacionamiento.valueOf((String) reserva.get("tipoPlaza"));
 
-        for (Reserva reserva : reservas) {
-            Date fechaReserva = reserva.getFechaReserva();
-            String horaFinReserva = reserva.getHoraFin();
-
-            // Obtener la hora y minutos de la cadena "horaFin"
-            String[] horaMinutos = horaFinReserva.split(":");
-            int hora = Integer.parseInt(horaMinutos[0]);
-            int minutos = Integer.parseInt(horaMinutos[1]);
-
-            Calendar currentTime = Calendar.getInstance();
-            int currentHour = currentTime.get(Calendar.HOUR_OF_DAY);
-            int currentMinutes = currentTime.get(Calendar.MINUTE);
-
-            int remainingMinutes = (hora - currentHour) * 60 + (minutos - currentMinutes);
-
-            if (remainingMinutes <= 0) {
-                continue;
-            } else if (remainingMinutes <= 15) {
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(fechaReserva);
-                cal.set(Calendar.HOUR_OF_DAY, hora);
-                cal.set(Calendar.MINUTE, minutos);
-                cal.set(Calendar.SECOND, 0);
-                cal.add(Calendar.MINUTE, -15);
-
-                // Configurar la alarma para la fecha y hora deseada
-                Intent intent = new Intent(context, AlarmReceiver.class);
-                intent.putExtra("remainingMinutes", remainingMinutes);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(context,0, intent, PendingIntent.FLAG_IMMUTABLE);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
-                } else {
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+                            Reserva reservaElem = new Reserva(plazaId, id, date, intervaloHoras.split("-")[0], intervaloHoras.split("-")[1], tipoPlaza);
+                            reservaList.add(reservaElem);
+                        }
+                    }
+                    if (!reservaList.isEmpty()) {
+                        reservasTxt.setVisibility(View.INVISIBLE);
+                        recyclerViewReservas.setVisibility(View.VISIBLE);
+                        SimpleDateFormat formato = new SimpleDateFormat("dd/MMM/yyyy");
+                        reservaAdapter = new ReservaAdapter(reservaList, formato, v, getParentFragmentManager());
+                        recyclerViewReservas.setAdapter(reservaAdapter);
+                    } else {
+                        recyclerViewReservas.setVisibility(View.GONE);
+                        reservasTxt.setVisibility(View.VISIBLE);
+                        SimpleDateFormat formato = new SimpleDateFormat("dd/MMM/yyyy");
+                        reservasTxt.setText("No tienes reservas");
+                        reservaAdapter = new ReservaAdapter(new ArrayList<>(), formato, v, getParentFragmentManager());
+                        recyclerViewReservas.setAdapter(reservaAdapter);
+                    }
+                    progressBar.setVisibility(View.GONE);
                 }
-                Log.d(TAG,"alarma creada");
             }
+        });
 
-        }
     }
 }

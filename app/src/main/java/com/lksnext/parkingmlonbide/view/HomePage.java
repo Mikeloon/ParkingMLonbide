@@ -1,4 +1,4 @@
-package com.lksnext.parkingmlonbide.NavFragments;
+package com.lksnext.parkingmlonbide.view;
 
 import static android.content.ContentValues.TAG;
 
@@ -6,8 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
@@ -26,7 +24,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.lksnext.parkingmlonbide.RegisterLogin.MainActivity;
 import com.lksnext.parkingmlonbide.R;
 
 public class HomePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -80,9 +77,9 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
                             // El documento existe, puedes acceder a los campos
-                             String username = documentSnapshot.getString("name");
-                             String email = documentSnapshot.getString("email");
-                             String role = documentSnapshot.getString("role");
+                            String username = documentSnapshot.getString("name");
+                            String email = documentSnapshot.getString("email");
+                            String role = documentSnapshot.getString("role");
                             if (role != null && role.equals("Admin")) {
                                 // Mostrar la opción "Pruebas"
                                 Menu menu = navigationView.getMenu();
