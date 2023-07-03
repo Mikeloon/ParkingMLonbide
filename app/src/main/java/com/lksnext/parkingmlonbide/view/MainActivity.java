@@ -102,13 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 if (TextUtils.isEmpty(email)){
                     Toast.makeText(MainActivity.this, "Por favor, ingresa tu correo electrónico", Toast.LENGTH_SHORT).show();
                 } else {
-                    mAuth.sendPasswordResetEmail(email).addOnCompleteListener(task -> {
-                        if (task.isSuccessful()){
-                            Toast.makeText(MainActivity.this, "Se ha enviado un correo electrónico para restablecer la contraseña", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(MainActivity.this, "No se pudo enviar el correo electrónico para restablecer la contraseña", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    sendResetPassEmail(email);
                 }
             }
         });
@@ -124,6 +118,51 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void SaveUserInFirestore(String name, FirebaseUser user, String uid){
+        db.collection("users").document(uid).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Log.d(TAG, "Usuario ya registrado.");
+                            } else {
+                                Map<String, Object> userMap = new HashMap<>();
+                                userMap.put("name", name);
+                                userMap.put("email", user.getEmail());
+                                userMap.put("role","User");
+
+                                db.collection("users").document(uid).set(userMap)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Toast.makeText(MainActivity.this, MSG_CONST + " " + name + "!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.d(TAG, "Error al guardar el usuario en Firestore");
+                                            }
+                                        });
+                            }
+                        } else {
+                            Log.d(TAG, "Error al verificar la existencia del usuario en Firestore");
+                        }
+                    }
+                });
+    }
+
+    private void sendResetPassEmail(String email){
+        mAuth.sendPasswordResetEmail(email).addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                Toast.makeText(MainActivity.this, "Se ha enviado un correo electrónico para restablecer la contraseña", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(MainActivity.this, "No se pudo enviar el correo electrónico para restablecer la contraseña", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -145,40 +184,7 @@ public class MainActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             String uid = mAuth.getCurrentUser().getUid();
                             String name = user.getDisplayName();
-
-                            db.collection("users").document(uid).get()
-                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                DocumentSnapshot document = task.getResult();
-                                                if (document.exists()) {
-                                                    Log.d(TAG, "Usuario ya registrado.");
-                                                } else {
-                                                    Map<String, Object> userMap = new HashMap<>();
-                                                    userMap.put("name", name);
-                                                    userMap.put("email", user.getEmail());
-                                                    userMap.put("role","User");
-
-                                                    db.collection("users").document(uid).set(userMap)
-                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                @Override
-                                                                public void onSuccess(Void aVoid) {
-                                                                    Toast.makeText(MainActivity.this, MSG_CONST + " " + name + "!", Toast.LENGTH_SHORT).show();
-                                                                }
-                                                            })
-                                                            .addOnFailureListener(new OnFailureListener() {
-                                                                @Override
-                                                                public void onFailure(@NonNull Exception e) {
-                                                                    Log.d(TAG, "Error al guardar el usuario en Firestore");
-                                                                }
-                                                            });
-                                                }
-                                            } else {
-                                                Log.d(TAG, "Error al verificar la existencia del usuario en Firestore");
-                                            }
-                                        }
-                                    });
+                            SaveUserInFirestore(name, user, uid);
                             Toast.makeText(MainActivity.this, MSG_CONST + " " + name + "!", Toast.LENGTH_SHORT).show();
                             openHomepage();
                         } else {
