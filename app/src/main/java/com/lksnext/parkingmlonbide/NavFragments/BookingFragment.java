@@ -63,8 +63,8 @@ public class BookingFragment extends Fragment {
 
     public static final String DAY_FORMAT = "dd/MMM/yyyy";
 
-    String[] horasInicio = {"08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "06:16"};
-    String[] horasFin = {"08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "06:29"};
+    String[] horasInicio = {"08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00"};
+    String[] horasFin = {"08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30"};
 
     @Nullable
     @Override
@@ -516,8 +516,6 @@ public class BookingFragment extends Fragment {
         int minutos = Integer.parseInt(horaMinutos[1]);
 
         Calendar currentTime = Calendar.getInstance();
-        int currentHour = currentTime.get(Calendar.HOUR_OF_DAY);
-        int currentMinutes = currentTime.get(Calendar.MINUTE);
 
         Calendar reservaTime = Calendar.getInstance();
         reservaTime.setTime(fechaReserva);

@@ -55,8 +55,6 @@
         android:background="?attr/selectableItemBackground"
         android:contentDescription="Next_day_btton" />
 
-
-
     <LinearLayout
         android:id="@+id/LinearLayoutImagenCocheP"
         android:layout_width="wrap_content"

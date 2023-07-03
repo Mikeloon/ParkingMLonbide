@@ -34,6 +34,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -86,15 +87,7 @@ public class ProfileFragment extends Fragment {
         buscarReservasUsuario(uid, userTxt, mailTxt, reservasTxt, recyclerViewReservas, v);
     }
 
-    private void buscarReservasUsuario(String uid, TextView userTxt, TextView mailTxt, TextView reservasTxt, RecyclerView recyclerViewReservas, View v){
-        progressBar.setVisibility(View.VISIBLE);
-
-        // Ocultar otros elementos relevantes
-        userTxt.setVisibility(View.INVISIBLE);
-        mailTxt.setVisibility(View.INVISIBLE);
-        reservasTxt.setVisibility(View.INVISIBLE);
-        recyclerViewReservas.setVisibility(View.INVISIBLE);
-
+    private void getUser(String uid){
         db.collection("users").document(uid).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -110,11 +103,24 @@ public class ProfileFragment extends Fragment {
                         }
                     }
                 });
+    }
+
+    private void buscarReservasUsuario(String uid, TextView userTxt, TextView mailTxt, TextView reservasTxt, RecyclerView recyclerViewReservas, View v){
+
+        progressBar.setVisibility(View.VISIBLE);
+        // Ocultar otros elementos relevantes
+        userTxt.setVisibility(View.INVISIBLE);
+        mailTxt.setVisibility(View.INVISIBLE);
+        reservasTxt.setVisibility(View.INVISIBLE);
+        recyclerViewReservas.setVisibility(View.INVISIBLE);
+
+        getUser(uid);
 
         Query UsuarioReservas = db.collection("Parking").whereEqualTo("reserva.usuarioId", uid);
         List<Reserva> reservaList = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat(DAY_FORMAT);
-
+        Date currentDate = new Date(); // Obtener la fecha actual
+        Log.d(TAG,"CurrentDate: " + currentDate);
         UsuarioReservas.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -133,31 +139,35 @@ public class ProfileFragment extends Fragment {
                             } catch (ParseException e) {
                                 System.out.println("Error al parsear la fecha: " + e.getMessage());
                             }
-                            String intervaloHoras = (String) reserva.get("intervaloHoras");
-                            TipoEstacionamiento tipoPlaza = TipoEstacionamiento.valueOf((String) reserva.get("tipoPlaza"));
 
-                            Reserva reservaElem = new Reserva(plazaId, id, date, intervaloHoras.split("-")[0], intervaloHoras.split("-")[1], tipoPlaza);
-                            reservaList.add(reservaElem);
+                            if (date != null && !date.before(currentDate)) {
+                                String intervaloHoras = (String) reserva.get("intervaloHoras");
+                                TipoEstacionamiento tipoPlaza = TipoEstacionamiento.valueOf((String) reserva.get("tipoPlaza"));
+                                Reserva reservaElem = new Reserva(plazaId, id, date, intervaloHoras.split("-")[0], intervaloHoras.split("-")[1], tipoPlaza);
+                                reservaList.add(reservaElem);
+                            }
                         }
                     }
-                    if (!reservaList.isEmpty()) {
-                        reservasTxt.setVisibility(View.INVISIBLE);
-                        recyclerViewReservas.setVisibility(View.VISIBLE);
-                        SimpleDateFormat formato = new SimpleDateFormat(DAY_FORMAT);
-                        reservaAdapter = new ReservaAdapter(reservaList, formato, v, getParentFragmentManager());
-                        recyclerViewReservas.setAdapter(reservaAdapter);
-                    } else {
-                        recyclerViewReservas.setVisibility(View.GONE);
-                        reservasTxt.setVisibility(View.VISIBLE);
-                        SimpleDateFormat formato = new SimpleDateFormat(DAY_FORMAT);
-                        reservasTxt.setText("No tienes reservas");
-                        reservaAdapter = new ReservaAdapter(new ArrayList<>(), formato, v, getParentFragmentManager());
-                        recyclerViewReservas.setAdapter(reservaAdapter);
-                    }
-                    progressBar.setVisibility(View.GONE);
+                    setUpUserBooking(reservaList);
                 }
             }
         });
-
+    }
+    private void setUpUserBooking(List<Reserva> reservaList){
+        if (!reservaList.isEmpty()) {
+            reservasTxt.setVisibility(View.INVISIBLE);
+            recyclerViewReservas.setVisibility(View.VISIBLE);
+            SimpleDateFormat formato = new SimpleDateFormat(DAY_FORMAT);
+            reservaAdapter = new ReservaAdapter(reservaList, formato, v, getParentFragmentManager());
+            recyclerViewReservas.setAdapter(reservaAdapter);
+        } else {
+            recyclerViewReservas.setVisibility(View.GONE);
+            reservasTxt.setVisibility(View.VISIBLE);
+            SimpleDateFormat formato = new SimpleDateFormat(DAY_FORMAT);
+            reservasTxt.setText("No tienes reservas");
+            reservaAdapter = new ReservaAdapter(new ArrayList<>(), formato, v, getParentFragmentManager());
+            recyclerViewReservas.setAdapter(reservaAdapter);
+        }
+        progressBar.setVisibility(View.GONE);
     }
 }
