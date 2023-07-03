@@ -357,6 +357,32 @@ public class BookingFragment extends Fragment {
         return Integer.parseInt(partes[1]);
     }
 
+    private int obtenerHora(String hora) {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        Date date = null;
+        try {
+            date = dateFormat.parse(hora);
+        } catch (ParseException e) {
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        // Obtener los minutos de la hora
+        int minutos = calendar.get(Calendar.MINUTE);
+
+        // Redondear los minutos a la media hora más cercana
+        int minutosRedondeados = Math.round(minutos / 30f) * 30;
+
+        // Establecer los minutos redondeados en el calendario
+        calendar.set(Calendar.MINUTE, minutosRedondeados);
+
+        // Obtener la hora del calendario
+        int horaExacta = calendar.get(Calendar.HOUR_OF_DAY);
+
+        return horaExacta;
+    }
+
     private TipoEstacionamiento getTipoPlaza(String plaza){
         TipoEstacionamiento tipoReserva = null;
         if (plaza.contains("convencional")) {
@@ -479,32 +505,6 @@ public class BookingFragment extends Fragment {
             }
         }
         callback.onDisponibilidadChecked(true);
-    }
-
-    private int obtenerHora(String hora) {
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-        Date date = null;
-        try {
-            date = dateFormat.parse(hora);
-        } catch (ParseException e) {
-        }
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-
-        // Obtener los minutos de la hora
-        int minutos = calendar.get(Calendar.MINUTE);
-
-        // Redondear los minutos a la media hora más cercana
-        int minutosRedondeados = Math.round(minutos / 30f) * 30;
-
-        // Establecer los minutos redondeados en el calendario
-        calendar.set(Calendar.MINUTE, minutosRedondeados);
-
-        // Obtener la hora del calendario
-        int horaExacta = calendar.get(Calendar.HOUR_OF_DAY);
-
-        return horaExacta;
     }
 
     private void setupAlarm(Reserva reserva, Context context) {

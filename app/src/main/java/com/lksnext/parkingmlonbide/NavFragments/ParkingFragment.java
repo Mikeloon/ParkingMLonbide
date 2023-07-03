@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.lksnext.parkingmlonbide.Adapters.SimpleAdapter;
 import com.lksnext.parkingmlonbide.R;
 
@@ -120,6 +121,7 @@ public class ParkingFragment extends Fragment {
             actualizarFechaActual();
         }
     }
+
     private void mostrarReservas(String fecha) {
         ArrayList<String> reservasCoche = new ArrayList<>();
         ArrayList<String> reservasElectrico = new ArrayList<>();
@@ -138,61 +140,64 @@ public class ParkingFragment extends Fragment {
         fechaReserva.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()){
                 if (task.getResult() != null){
-                    Log.d(TAG,task.getResult().toString());
-                    for (QueryDocumentSnapshot ReservaDocument : task.getResult()) {
-                        Map<String, Object> reserva = (Map<String, Object>) ReservaDocument.getData().get("reserva");
-                        Log.d(TAG,reserva.toString());
-                        String tipoPlaza = (String) reserva.get("tipoPlaza");
-                        String reservaString = String.format("%s: %s", reserva.get("plazaId"), reserva.get("intervaloHoras"));
-
-                        switch (tipoPlaza) {
-                            case "Coche":
-                                reservasCoche.add(reservaString);
-                                break;
-                            case "Electrico":
-                                reservasElectrico.add(reservaString);
-                                break;
-                            case "Minusvalido":
-                                reservasMinusv.add(reservaString);
-                                break;
-                            case "Moto":
-                                reservasMoto.add(reservaString);
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                    RecyclerView.Adapter adapterCoche = new SimpleAdapter(reservasCoche);
-                    recyclerViewCoche.setAdapter(adapterCoche);
-                    if (reservasCoche.isEmpty()) {
-                        reservasCoche.add(MSG_NORESERVAS);
-                    }
-
-                    RecyclerView.Adapter adapterElectrico = new SimpleAdapter(reservasElectrico);
-                    recyclerViewElectrico.setAdapter(adapterElectrico);
-                    if (reservasElectrico.isEmpty()) {
-                        reservasElectrico.add(MSG_NORESERVAS);
-                    }
-
-                    RecyclerView.Adapter adapterMinusv = new SimpleAdapter(reservasMinusv);
-                    recyclerViewMinusv.setAdapter(adapterMinusv);
-                    if (reservasMinusv.isEmpty()) {
-                        reservasMinusv.add(MSG_NORESERVAS);
-                    }
-
-                    RecyclerView.Adapter adapterMoto = new SimpleAdapter(reservasMoto);
-                    recyclerViewMoto.setAdapter(adapterMoto);
-                    if (reservasMoto.isEmpty()) {
-                        reservasMoto.add(MSG_NORESERVAS);
-                    }
-                    progressBar.setVisibility(View.INVISIBLE);
-                    fechaTextView.setVisibility(View.VISIBLE);
-                    recyclerViewCoche.setVisibility(View.VISIBLE);
-                    recyclerViewElectrico.setVisibility(View.VISIBLE);
-                    recyclerViewMinusv.setVisibility(View.VISIBLE);
-                    recyclerViewMoto.setVisibility(View.VISIBLE);
+                    Log.d(TAG, task.getResult().toString());
+                    procesarReservas(task.getResult(), reservasCoche, reservasElectrico, reservasMinusv, reservasMoto);
                 }
             }
         });
     }
+
+    private void procesarReservas(QuerySnapshot snapshot, ArrayList<String> reservasCoche, ArrayList<String> reservasElectrico, ArrayList<String> reservasMinusv, ArrayList<String> reservasMoto) {
+        for (QueryDocumentSnapshot ReservaDocument : snapshot) {
+            Map<String, Object> reserva = (Map<String, Object>) ReservaDocument.getData().get("reserva");
+            Log.d(TAG, reserva.toString());
+            String tipoPlaza = (String) reserva.get("tipoPlaza");
+            String reservaString = String.format("%s: %s", reserva.get("plazaId"), reserva.get("intervaloHoras"));
+
+            switch (tipoPlaza) {
+                case "Coche":
+                    agregarReserva(reservasCoche, reservaString);
+                    break;
+                case "Electrico":
+                    agregarReserva(reservasElectrico, reservaString);
+                    break;
+                case "Minusvalido":
+                    agregarReserva(reservasMinusv, reservaString);
+                    break;
+                case "Moto":
+                    agregarReserva(reservasMoto, reservaString);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        configurarRecyclerView(reservasCoche, recyclerViewCoche);
+        configurarRecyclerView(reservasElectrico, recyclerViewElectrico);
+        configurarRecyclerView(reservasMinusv, recyclerViewMinusv);
+        configurarRecyclerView(reservasMoto, recyclerViewMoto);
+
+        progressBar.setVisibility(View.INVISIBLE);
+        fechaTextView.setVisibility(View.VISIBLE);
+        recyclerViewCoche.setVisibility(View.VISIBLE);
+        recyclerViewElectrico.setVisibility(View.VISIBLE);
+        recyclerViewMinusv.setVisibility(View.VISIBLE);
+        recyclerViewMoto.setVisibility(View.VISIBLE);
+    }
+
+    private void agregarReserva(ArrayList<String> listaReservas, String reservaString) {
+        listaReservas.add(reservaString);
+        if (listaReservas.size() == 1 && listaReservas.get(0).equals(MSG_NORESERVAS)) {
+            listaReservas.remove(0);
+        }
+    }
+
+    private void configurarRecyclerView(ArrayList<String> listaReservas, RecyclerView recyclerView) {
+        RecyclerView.Adapter adapter = new SimpleAdapter(listaReservas);
+        recyclerView.setAdapter(adapter);
+        if (listaReservas.isEmpty()) {
+            listaReservas.add(MSG_NORESERVAS);
+        }
+    }
+
 }

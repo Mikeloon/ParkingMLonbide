@@ -106,6 +106,34 @@ public class ProfileFragment extends Fragment {
                 });
     }
 
+    private Date parseBookingDate(String fecha){
+        Date date = null;
+        try {
+            date = sdf.parse(fecha);
+        } catch (ParseException e) {
+            System.out.println("Error");
+        }
+        return date;
+    }
+
+    private void setUpUserBooking(List<Reserva> reservaList){
+        if (!reservaList.isEmpty()) {
+            reservasTxt.setVisibility(View.INVISIBLE);
+            recyclerViewReservas.setVisibility(View.VISIBLE);
+            SimpleDateFormat formato = new SimpleDateFormat(DAY_FORMAT);
+            reservaAdapter = new ReservaAdapter(reservaList, formato, v, getParentFragmentManager());
+            recyclerViewReservas.setAdapter(reservaAdapter);
+        } else {
+            recyclerViewReservas.setVisibility(View.GONE);
+            reservasTxt.setVisibility(View.VISIBLE);
+            SimpleDateFormat formato = new SimpleDateFormat(DAY_FORMAT);
+            reservasTxt.setText("No tienes reservas");
+            reservaAdapter = new ReservaAdapter(new ArrayList<>(), formato, v, getParentFragmentManager());
+            recyclerViewReservas.setAdapter(reservaAdapter);
+        }
+        progressBar.setVisibility(View.GONE);
+    }
+
     private void buscarReservasUsuario(String uid, TextView userTxt, TextView mailTxt, TextView reservasTxt, RecyclerView recyclerViewReservas, View v){
 
         progressBar.setVisibility(View.VISIBLE);
@@ -148,31 +176,5 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    private Date parseBookingDate(String fecha){
-        Date date = null;
-        try {
-            date = sdf.parse(fecha);
-        } catch (ParseException e) {
-            System.out.println("Error");
-        }
-        return date;
-    }
 
-    private void setUpUserBooking(List<Reserva> reservaList){
-        if (!reservaList.isEmpty()) {
-            reservasTxt.setVisibility(View.INVISIBLE);
-            recyclerViewReservas.setVisibility(View.VISIBLE);
-            SimpleDateFormat formato = new SimpleDateFormat(DAY_FORMAT);
-            reservaAdapter = new ReservaAdapter(reservaList, formato, v, getParentFragmentManager());
-            recyclerViewReservas.setAdapter(reservaAdapter);
-        } else {
-            recyclerViewReservas.setVisibility(View.GONE);
-            reservasTxt.setVisibility(View.VISIBLE);
-            SimpleDateFormat formato = new SimpleDateFormat(DAY_FORMAT);
-            reservasTxt.setText("No tienes reservas");
-            reservaAdapter = new ReservaAdapter(new ArrayList<>(), formato, v, getParentFragmentManager());
-            recyclerViewReservas.setAdapter(reservaAdapter);
-        }
-        progressBar.setVisibility(View.GONE);
-    }
 }
