@@ -55,6 +55,7 @@ public class ProfileFragment extends Fragment {
     private String uid;
 
     public static final String DAY_FORMAT = "dd/MMM/yyyy";
+    SimpleDateFormat sdf = new SimpleDateFormat(DAY_FORMAT);
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -118,7 +119,6 @@ public class ProfileFragment extends Fragment {
 
         Query UsuarioReservas = db.collection("Parking").whereEqualTo("reserva.usuarioId", uid);
         List<Reserva> reservaList = new ArrayList<>();
-        SimpleDateFormat sdf = new SimpleDateFormat(DAY_FORMAT);
         Date currentDate = new Date(); // Obtener la fecha actual
         Log.d(TAG,"CurrentDate: " + currentDate);
         UsuarioReservas.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -132,13 +132,7 @@ public class ProfileFragment extends Fragment {
                             String plazaId = (String) reserva.get("plazaId");
                             Long id = Long.valueOf(ReservaU.getId());
                             String fecha = (String) reserva.get("FechaReserva");
-                            Date date = null;
-                            try {
-                                date = sdf.parse(fecha);
-                                System.out.println("Fecha parseada: " + date);
-                            } catch (ParseException e) {
-                                System.out.println("Error al parsear la fecha: " + e.getMessage());
-                            }
+                            Date date = parseBookingDate(fecha);
 
                             if (date != null && !date.before(currentDate)) {
                                 String intervaloHoras = (String) reserva.get("intervaloHoras");
@@ -153,6 +147,17 @@ public class ProfileFragment extends Fragment {
             }
         });
     }
+
+    private Date parseBookingDate(String fecha){
+        Date date = null;
+        try {
+            date = sdf.parse(fecha);
+        } catch (ParseException e) {
+            System.out.println("Error");
+        }
+        return date;
+    }
+
     private void setUpUserBooking(List<Reserva> reservaList){
         if (!reservaList.isEmpty()) {
             reservasTxt.setVisibility(View.INVISIBLE);
