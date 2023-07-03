@@ -39,13 +39,20 @@ public class AlarmReceiver extends BroadcastReceiver {
         Log.d(TAG, "builder hecho");
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Intent permissionIntent = new Intent(context, PermissionRequestActivity.class);
-            permissionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(permissionIntent);
-        }
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                // El permiso no está otorgado, inicia la actividad de solicitud de permisos
+                Intent permissionIntent = new Intent(context, PermissionRequestActivity.class);
+                permissionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(permissionIntent);
+            } else {
+                // El permiso ya está otorgado, crea la notificación
+                notificationManagerCompat.notify(123, builder.build());
+                Log.d(TAG, "notificacion hecha");
+            }
+        } else {
+            // El dispositivo no está ejecutando Android Tiramisú, crea la notificación sin solicitar permisos
             notificationManagerCompat.notify(123, builder.build());
-            Log.d(TAG, "notificacion hecho");
+            Log.d(TAG, "notificacion hecha");
         }
     }
 }
