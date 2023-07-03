@@ -12,9 +12,6 @@ public class Reserva {
     private String horaFin;
     private TipoEstacionamiento tipoPlaza;
 
-    public Reserva() {
-    }
-
     public Reserva(String plazaId, Date fechaReserva, String horaInicio, String horaFin, TipoEstacionamiento tipoPlaza) {
         this.plazaId = plazaId;
         this.id = generateRandomId();
@@ -34,14 +31,6 @@ public class Reserva {
     }
 
 
-    public String getPlazaId() {
-        return plazaId;
-    }
-
-    public void setPlazaId(String plazaId) {
-        this.plazaId = plazaId;
-    }
-
     public long getId() {
         return id;
     }
@@ -54,32 +43,16 @@ public class Reserva {
         return fechaReserva;
     }
 
-    public void setFechaReserva(Date fechaReserva) {
-        this.fechaReserva = fechaReserva;
-    }
-
     public String getHoraInicio() {
         return horaInicio;
-    }
-
-    public void setHoraInicio(String horaInicio) {
-        this.horaInicio = horaInicio;
     }
 
     public String getHoraFin() {
         return horaFin;
     }
 
-    public void setHoraFin(String horaFin) {
-        this.horaFin = horaFin;
-    }
-
     public TipoEstacionamiento getTipoPlaza() {
         return tipoPlaza;
-    }
-
-    public void setTipoPlaza(TipoEstacionamiento tipoPlaza) {
-        this.tipoPlaza = tipoPlaza;
     }
 
     public static long generateRandomId() {

@@ -36,10 +36,6 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public void setReservas(List<Reserva> reservas) {
-        this.reservas = reservas;
-    }
-
     public ReservaAdapter(List<Reserva> reservas, SimpleDateFormat formato, View view, FragmentManager fragmentManager) {
         this.reservas = reservas;
         this.formato = formato;
@@ -60,13 +56,6 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
         Reserva reserva = reservas.get(position);
         String horaInicio = reserva.getHoraInicio();
         String horaFin = reserva.getHoraFin();
-
-        Date documentFecha = reserva.getFechaReserva();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
-        String documentoFecha = dateFormat.format(documentFecha);
-
-        String tipoPlaza = String.valueOf(reserva.getTipoPlaza());
-        String plazaId = reserva.getPlazaId();
         holder.textViewFecha.setText(formato.format(reserva.getFechaReserva()) + " ");
         holder.textViewHoras.setText(horaInicio + " -" + horaFin);
         holder.textViewTipoPlaza.setText(reserva.getTipoPlaza().toString());
@@ -74,11 +63,8 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
         holder.buttonCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String uid = mAuth.getCurrentUser().getUid();
                 long rid = reserva.getId();
-
                 DocumentReference ReservaAEliminar = db.collection("Parking").document(String.valueOf(rid));
-
                 ReservaAEliminar.delete()
                         .addOnSuccessListener(aVoid -> {
                             // El documento se eliminó exitosamente
@@ -95,7 +81,6 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
             }
         });
     }
-
     @Override
     public int getItemCount() {
         return reservas.size();

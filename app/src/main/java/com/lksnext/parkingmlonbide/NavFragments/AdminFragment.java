@@ -24,7 +24,6 @@ public class AdminFragment extends Fragment {
 
     private int numCocheNormal, numCocheElec, numMinusv, numMoto;
 
-    private FirebaseFirestore db;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,8 +45,6 @@ public class AdminFragment extends Fragment {
 
         guardarButton = view.findViewById(R.id.guardarButton);
         restablecerButton = view.findViewById(R.id.restablecerButton);
-
-        db = FirebaseFirestore.getInstance();
 
         obtenerNumeroPlazas();
 

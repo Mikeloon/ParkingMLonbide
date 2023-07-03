@@ -17,8 +17,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:enableOnBackInvokedCallback="true"
         android:theme="@style/Theme.ParkingMLonbide"
         tools:targetApi="31">
+
         <activity
             android:name="com.lksnext.parkingmlonbide.view.MainActivity"
             android:exported="true" >

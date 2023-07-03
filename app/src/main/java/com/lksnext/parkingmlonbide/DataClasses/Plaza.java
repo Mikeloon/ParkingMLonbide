@@ -20,18 +20,6 @@ public class Plaza {
         return id;
     }
 
-    public List<Map<String, String>> getReservas() {
-        return reservas;
-    }
-
-    public boolean isDisponible() {
-        return disponible;
-    }
-
-    public void setDisponible(boolean disponible) {
-        this.disponible = disponible;
-    }
-
     public void agregarReserva(String username, String horaInicio, String horaFin) {
         Map<String, String> reserva = new HashMap<>();
         reserva.put("username", username);
