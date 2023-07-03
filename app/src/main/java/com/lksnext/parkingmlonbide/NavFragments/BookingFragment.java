@@ -29,6 +29,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.common.api.Result;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -444,39 +445,40 @@ public class BookingFragment extends Fragment {
     }
 
     private void comprobarDisponibilidad(String horaInicio, String horaFin, String fechaReserva, TipoEstacionamiento tipoPlaza, String plazaId, DisponibilidadCallback callback) {
-
         // Obtener el intervalo de tiempo seleccionado
         int horaInicioSeleccionada = obtenerHora(horaInicio);
         int horaFinSeleccionada = obtenerHora(horaFin);
 
         // Consultar todas las reservas existentes para la plaza y la fecha seleccionadas
         Query ReservasPlaza = db.collection("Parking").whereEqualTo("reserva.plazaId", plazaId).whereEqualTo("reserva.FechaReserva",fechaReserva);
-
         ReservasPlaza.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
                     if (task.getResult() != null){
                         Log.d(TAG,task.getResult().toString());
-                        for (QueryDocumentSnapshot ReservaU: task.getResult()){
-                            Map<String, Object> reserva = (Map<String, Object>) ReservaU.getData().get("reserva");
-                            Log.d(TAG,reserva.toString());
-                            String intervaloHoras = (String) reserva.get("intervaloHoras");
-                            int horaInicioReservaInt = obtenerHora(intervaloHoras.split("-")[0]);
-                            int horaFinReservaInt = obtenerHora(intervaloHoras.split("-")[1]);
-                            if ((horaInicioSeleccionada <= horaFinReservaInt && horaInicioSeleccionada >= horaInicioReservaInt) || (horaFinSeleccionada >= horaInicioReservaInt && horaInicioSeleccionada <= horaFinReservaInt)) {
-                                // Hay una reserva existente que se superpone con el intervalo seleccionado
-                                callback.onDisponibilidadChecked(false);
-                                return;
-                            }
-                        }
-                        callback.onDisponibilidadChecked(true);
+                        checkReservasDisponibilidad(task.getResult(), horaInicioSeleccionada, horaFinSeleccionada, callback);
                     }
                 }else {
                     callback.onDisponibilidadChecked(false);
                 }
             }
         });
+    }
+    private void checkReservasDisponibilidad(QuerySnapshot snapshot, int horaInicioSeleccionada, int horaFinSeleccionada, DisponibilidadCallback callback) {
+        for (QueryDocumentSnapshot ReservaU: snapshot) {
+            Map<String, Object> reserva = (Map<String, Object>) ReservaU.getData().get("reserva");
+            Log.d(TAG,reserva.toString());
+            String intervaloHoras = (String) reserva.get("intervaloHoras");
+            int horaInicioReservaInt = obtenerHora(intervaloHoras.split("-")[0]);
+            int horaFinReservaInt = obtenerHora(intervaloHoras.split("-")[1]);
+            if ((horaInicioSeleccionada <= horaFinReservaInt && horaInicioSeleccionada >= horaInicioReservaInt) || (horaFinSeleccionada >= horaInicioReservaInt && horaInicioSeleccionada <= horaFinReservaInt)) {
+                // Hay una reserva existente que se superpone con el intervalo seleccionado
+                callback.onDisponibilidadChecked(false);
+                return;
+            }
+        }
+        callback.onDisponibilidadChecked(true);
     }
 
     private int obtenerHora(String hora) {
