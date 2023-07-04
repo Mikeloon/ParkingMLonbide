@@ -105,8 +105,9 @@ public class ProfileFragment extends Fragment {
                 });
     }
 
-    private Date parseBookingDate(String fecha){
+    public Date parseBookingDate(String fecha){
         Date date = null;
+        Log.d(TAG,fecha);
         try {
             date = sdf.parse(fecha);
         } catch (ParseException e) {
