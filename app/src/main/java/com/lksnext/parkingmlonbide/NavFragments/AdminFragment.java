@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.lksnext.parkingmlonbide.DataClasses.Parking;
 import com.lksnext.parkingmlonbide.R;
 

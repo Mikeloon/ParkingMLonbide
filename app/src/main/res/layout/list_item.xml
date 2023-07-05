@@ -11,7 +11,7 @@
         android:id="@+id/itemTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
+        android:background="#40567C"
         android:textSize="14sp" />
 
 </LinearLayout>

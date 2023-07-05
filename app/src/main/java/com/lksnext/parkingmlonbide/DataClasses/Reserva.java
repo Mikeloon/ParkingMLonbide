@@ -30,7 +30,6 @@ public class Reserva {
         this.tipoPlaza = tipoPlaza;
     }
 
-
     public long getId() {
         return id;
     }

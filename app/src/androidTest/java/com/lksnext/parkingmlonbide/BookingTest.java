@@ -1,5 +1,4 @@
 package com.lksnext.parkingmlonbide;
-
 import android.app.Instrumentation;
 
 import androidx.test.core.app.ActivityScenario;
@@ -23,13 +22,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
-public class LoginTest {
-
+public class BookingTest {
     private Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
     private UiDevice device = UiDevice.getInstance(instrumentation);
+
+    //Include booking and cancel booking test.
     @Test
-    public void testLogin() throws InterruptedException {
-        // Esperar a que se cargue la actividad de inicio de sesión
+    public void testBooking() throws InterruptedException {
         ActivityScenario.launch(MainActivity.class);
 
         // Realizar la acción de ingresar el correo y la contraseña
@@ -46,33 +45,29 @@ public class LoginTest {
         device.wait(Until.hasObject(By.res("com.lksnext.parkingmlonbide:id/draweLayout")), 4000);
         Espresso.onView(ViewMatchers.withId(R.id.draweLayout))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
-    }
-
-    @Test
-    public void testLogout(){
-        ActivityScenario.launch(MainActivity.class);
-
-        // Realizar la acción de ingresar el correo y la contraseña
-        Espresso.onView(ViewMatchers.withId(R.id.userEmail))
-                .perform(ViewActions.typeText("mikellonbide@gmail.com"));
-
-        Espresso.onView(ViewMatchers.withId(R.id.password))
-                .perform(ViewActions.typeText("mikelon"));
-
-        // Hacer clic en el botón de inicio de sesión
-        Espresso.onView(ViewMatchers.withId(R.id.loginbtn))
-                .perform(ViewActions.click());
-
-        device.wait(Until.hasObject(By.res("com.lksnext.parkingmlonbide:id/draweLayout")), 4000);
-        Espresso.onView(ViewMatchers.withId(R.id.draweLayout))
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
 
         Espresso.onView(ViewMatchers.withId(R.id.imgMenu)).perform(ViewActions.click());
 
-        Espresso.onView(ViewMatchers.withId(R.id.Salir)).perform(ViewActions.click());
+        Espresso.onView(ViewMatchers.withId(R.id.menuReserva)).perform(ViewActions.click());
 
-        Espresso.onView(ViewMatchers.withId(R.id.signin))
+        Espresso.onView(ViewMatchers.withId(R.id.BookingFragment))
+                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
+
+        Espresso.onView(ViewMatchers.withId(R.id.btnSiguiente)).perform(ViewActions.click());
+        Espresso.onView(ViewMatchers.withId(R.id.LinearLayoutRealizarReservaCoche)).perform(ViewActions.click());
+        device.wait(Until.hasObject(By.res("com.lksnext.parkingmlonbide:id/popup")), 3000);
+        Espresso.onView(ViewMatchers.withId(R.id.btnCerrar))
+                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
+
+        Espresso.onView(ViewMatchers.withId(R.id.btnAceptar)).perform(ViewActions.click());
+
+        Espresso.onView(ViewMatchers.withId(R.id.imgMenu)).perform(ViewActions.click());
+
+        Espresso.onView(ViewMatchers.withId(R.id.menuProfile)).perform(ViewActions.click());
+
+        device.wait(Until.hasObject(By.res("com.lksnext.parkingmlonbide:id/profileFragment")), 3000);
+        Espresso.onView(ViewMatchers.withId(R.id.buttonCancelar)).perform(ViewActions.click());
+        Espresso.onView(ViewMatchers.withId(R.id.reservastxt))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
     }
 }
-

@@ -36,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -53,8 +54,8 @@ public class ProfileFragment extends Fragment {
     private  RecyclerView recyclerViewReservas;
     private String uid;
 
-    public static final String DAY_FORMAT = "dd/MMM/yyyy";
-    SimpleDateFormat sdf = new SimpleDateFormat(DAY_FORMAT);
+    public static final String DAY_FORMAT = "dd/MM/yyyy";
+    SimpleDateFormat sdf = new SimpleDateFormat(DAY_FORMAT, Locale.ENGLISH);
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -107,7 +108,7 @@ public class ProfileFragment extends Fragment {
 
     public Date parseBookingDate(String fecha){
         Date date = null;
-        Log.d(TAG,fecha);
+        //Log.d(TAG,fecha);
         try {
             date = sdf.parse(fecha);
         } catch (ParseException e) {
@@ -175,6 +176,4 @@ public class ProfileFragment extends Fragment {
             }
         });
     }
-
-
 }

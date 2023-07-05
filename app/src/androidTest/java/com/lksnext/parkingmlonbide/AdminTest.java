@@ -23,38 +23,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
-public class LoginTest {
+public class AdminTest {
 
     private Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
     private UiDevice device = UiDevice.getInstance(instrumentation);
+
     @Test
-    public void testLogin() throws InterruptedException {
-        // Esperar a que se cargue la actividad de inicio de sesión
+    public void checkGetAdminRole(){
         ActivityScenario.launch(MainActivity.class);
 
         // Realizar la acción de ingresar el correo y la contraseña
         Espresso.onView(ViewMatchers.withId(R.id.userEmail))
-                .perform(ViewActions.typeText("mikellonbide@gmail.com"));
-
-        Espresso.onView(ViewMatchers.withId(R.id.password))
-                .perform(ViewActions.typeText("mikelon1"));
-
-        // Hacer clic en el botón de inicio de sesión
-        Espresso.onView(ViewMatchers.withId(R.id.loginbtn))
-                .perform(ViewActions.click());
-
-        device.wait(Until.hasObject(By.res("com.lksnext.parkingmlonbide:id/draweLayout")), 4000);
-        Espresso.onView(ViewMatchers.withId(R.id.draweLayout))
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
-    }
-
-    @Test
-    public void testLogout(){
-        ActivityScenario.launch(MainActivity.class);
-
-        // Realizar la acción de ingresar el correo y la contraseña
-        Espresso.onView(ViewMatchers.withId(R.id.userEmail))
-                .perform(ViewActions.typeText("mikellonbide@gmail.com"));
+                .perform(ViewActions.typeText("mikel@maik.com"));
 
         Espresso.onView(ViewMatchers.withId(R.id.password))
                 .perform(ViewActions.typeText("mikelon"));
@@ -69,10 +49,9 @@ public class LoginTest {
 
         Espresso.onView(ViewMatchers.withId(R.id.imgMenu)).perform(ViewActions.click());
 
-        Espresso.onView(ViewMatchers.withId(R.id.Salir)).perform(ViewActions.click());
+        Espresso.onView(ViewMatchers.withId(R.id.menuAdmin)).perform(ViewActions.click());
 
-        Espresso.onView(ViewMatchers.withId(R.id.signin))
+        Espresso.onView(ViewMatchers.withId(R.id.gestionlbl))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
     }
 }
-

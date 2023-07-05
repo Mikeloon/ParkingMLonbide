@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="20dp">
@@ -23,6 +22,7 @@
         android:layout_marginStart="84dp"
         android:layout_marginTop="20dp"
         android:text="Username"
+        android:textColor="#607D8B"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent" />
@@ -34,6 +34,7 @@
         android:layout_marginStart="12dp"
         android:layout_marginTop="16dp"
         android:text="email"
+        android:textColor="#607D8B"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toBottomOf="@+id/userHeader" />
 </androidx.constraintlayout.widget.ConstraintLayout>

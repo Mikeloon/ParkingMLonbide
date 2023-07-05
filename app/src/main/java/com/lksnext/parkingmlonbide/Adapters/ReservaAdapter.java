@@ -69,10 +69,8 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
                         .addOnSuccessListener(aVoid -> {
                             // El documento se eliminó exitosamente
                             Toast.makeText(view.getContext(), "Reserva eliminada correctamente", Toast.LENGTH_SHORT).show();
-                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            Fragment profileFragment = new ProfileFragment();
-                            fragmentTransaction.replace(R.id.profileFragment, profileFragment);
-                            fragmentTransaction.commit();
+                            removeReserva(holder.getAdapterPosition()); // Eliminar la reserva del adaptador
+
                         })
                         .addOnFailureListener(e -> {
                             // Ocurrió un error al eliminar el documento
@@ -81,6 +79,20 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
             }
         });
     }
+
+    public void removeReserva(int position) {
+        reservas.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, reservas.size());
+        if (reservas.isEmpty()) {
+            TextView reservasTxt = view.findViewById(R.id.reservastxt);
+            RecyclerView recyclerViewReservas = view.findViewById(R.id.recyclerViewReservas);
+            recyclerViewReservas.setVisibility(View.GONE);
+            reservasTxt.setVisibility(View.VISIBLE);
+            reservasTxt.setText("No tienes reservas");
+        }
+    }
+
     @Override
     public int getItemCount() {
         return reservas.size();

@@ -12,7 +12,7 @@
 
     <TextView
         android:id="@+id/textViewFecha"
-        android:textColor="#FFFFFF"
+        android:textColor="#607D8B"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -23,7 +23,7 @@
 
     <TextView
         android:id="@+id/textViewHoras"
-        android:textColor="#FFFFFF"
+        android:textColor="#607D8B"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -33,7 +33,7 @@
 
     <TextView
         android:id="@+id/textViewTipoPlaza"
-        android:textColor="#FFFFFF"
+        android:textColor="#607D8B"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"

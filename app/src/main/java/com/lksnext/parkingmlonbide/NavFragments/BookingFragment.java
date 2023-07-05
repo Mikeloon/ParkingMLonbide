@@ -61,7 +61,7 @@ public class BookingFragment extends Fragment {
     private TextView fechaTextView;
     private Calendar calendar;
 
-    public static final String DAY_FORMAT = "dd/MMM/yyyy";
+    public static final String DAY_FORMAT = "dd/MM/yyyy";
 
     String[] horasInicio = {"08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00"};
     String[] horasFin = {"08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30"};
@@ -300,7 +300,7 @@ public class BookingFragment extends Fragment {
         });
     }
 
-    private int calcularDuracionHoras(String horaInicio, String horaFin) {
+    public int calcularDuracionHoras(String horaInicio, String horaFin) {
         int inicioHoras = obtenerHoras(horaInicio);
         int inicioMinutos = obtenerMinutos(horaInicio);
 
@@ -346,12 +346,12 @@ public class BookingFragment extends Fragment {
         return true;
     }
 
-    private int obtenerHoras(String hora) {
+    public int obtenerHoras(String hora) {
         String[] partes = hora.split(":");
         return Integer.parseInt(partes[0]);
     }
 
-    private int obtenerMinutos(String hora) {
+    public int obtenerMinutos(String hora) {
         String[] partes = hora.split(":");
         return Integer.parseInt(partes[1]);
     }

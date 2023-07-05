@@ -37,7 +37,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
-        DrawerLayout drawerLayout = findViewById(R.id.draweLayout);
+        drawerLayout = findViewById(R.id.draweLayout);
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -111,7 +111,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
                 });
 
-        NavController navController = Navigation.findNavController(this, R.id.navHostFragment);
+        navController = Navigation.findNavController(this, R.id.navHostFragment);
         NavigationUI.setupWithNavController(navigationView,navController);
     }
 

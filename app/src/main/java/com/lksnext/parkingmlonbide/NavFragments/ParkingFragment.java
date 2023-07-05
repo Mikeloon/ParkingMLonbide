@@ -85,7 +85,7 @@ public class ParkingFragment extends Fragment {
         btnAnterior.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                retrocederDia(view);
+                retrocederDia();
             }
         });
 
@@ -93,27 +93,27 @@ public class ParkingFragment extends Fragment {
         btnSiguiente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                avanzarDia(view);
+                avanzarDia();
             }
         });
 
         return view;
     }
     private void actualizarFechaActual() {
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MMM/yyyy");
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         Date fechaActual = calendar.getTime();
         fechaTextView.setText(formato.format(fechaActual));
         fechaTextView.setGravity(Gravity.CENTER);
         mostrarReservas(formato.format(fechaActual));
     }
-    private void retrocederDia(View view) {
+    private void retrocederDia() {
         Calendar today = Calendar.getInstance();
         if (calendar.after(today)) {
             calendar.add(Calendar.DAY_OF_YEAR, -1);
             actualizarFechaActual();
         }
     }
-    private void avanzarDia(View view) {
+    private void avanzarDia() {
         Calendar today = Calendar.getInstance();
         today.add(Calendar.DAY_OF_YEAR, 6); // Agregar 6 para incluir el día actual y los próximos 6 días
         if (calendar.before(today)) {
@@ -138,11 +138,9 @@ public class ParkingFragment extends Fragment {
         Query fechaReserva = db.collection("Parking").whereEqualTo("reserva.FechaReserva", fecha);
 
         fechaReserva.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
-                if (task.getResult() != null){
-                    Log.d(TAG, task.getResult().toString());
-                    procesarReservas(task.getResult(), reservasCoche, reservasElectrico, reservasMinusv, reservasMoto);
-                }
+            if (task.isSuccessful() && task.getResult() != null){
+                Log.d(TAG, task.getResult().toString());
+                procesarReservas(task.getResult(), reservasCoche, reservasElectrico, reservasMinusv, reservasMoto);
             }
         });
     }
@@ -193,7 +191,7 @@ public class ParkingFragment extends Fragment {
     }
 
     private void configurarRecyclerView(ArrayList<String> listaReservas, RecyclerView recyclerView) {
-        RecyclerView.Adapter adapter = new SimpleAdapter(listaReservas);
+        RecyclerView.Adapter<SimpleAdapter.ViewHolder> adapter = new SimpleAdapter(listaReservas);
         recyclerView.setAdapter(adapter);
         if (listaReservas.isEmpty()) {
             listaReservas.add(MSG_NORESERVAS);
