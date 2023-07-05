@@ -1,10 +1,22 @@
 package com.lksnext.parkingmlonbide.DataClasses;
 
-import java.util.ArrayList;
-
 public class Parking {
-    public static int PlazaCoches = 10;
-    public static int PlazasElectricos = 4;
-    public static int PlazasMinusvalidos = 4;
-    public static int Motos = 6;
+    public static int PlazaCoches;
+    public static int PlazasElectricos;
+    public static int PlazasMinusvalidos;
+    public static int Motos;
+
+    static {
+        PlazaCoches = 4;
+        PlazasElectricos = 2;
+        PlazasMinusvalidos = 2;
+        Motos = 2;
+    }
+
+    public static void actualizarPlazas(int cocheNormal, int cocheElec, int minusv, int moto) {
+        PlazaCoches = cocheNormal;
+        PlazasElectricos = cocheElec;
+        PlazasMinusvalidos = minusv;
+        Motos = moto;
+    }
 }

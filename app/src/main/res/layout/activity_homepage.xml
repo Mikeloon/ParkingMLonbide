@@ -5,8 +5,7 @@
     android:id="@+id/draweLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
-    tools:context="com.lksnext.parkingmlonbide.NavFragments.HomePage">
+    tools:context="com.lksnext.parkingmlonbide.view.HomePage">
 
     <androidx.constraintlayout.widget.ConstraintLayout
 
@@ -29,6 +28,7 @@
                 android:contentDescription="@string/app_name"
                 android:src="@drawable/baseline_menu_24"
                 />
+
         </LinearLayout>
         <fragment
             android:layout_width="match_parent"

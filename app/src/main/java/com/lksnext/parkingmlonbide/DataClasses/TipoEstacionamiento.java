@@ -1,7 +1,7 @@
 package com.lksnext.parkingmlonbide.DataClasses;
 
 public enum TipoEstacionamiento {
-    Normal,
+    Coche,
     Electrico,
     Minusvalido,
     Moto

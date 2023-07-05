@@ -14,7 +14,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "763306789736-bm2qtktqqlsif1d3t8ad58rt968nj2c3.apps.googleusercontent.com",
+          "client_id": "763306789736-2a5gefbo1atgeh7ml73eqnc7itofhmd1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lksnext.parkingmlonbide",
+            "certificate_hash": "cafc60c1c4e61dfb31c0d22e01363910453aa494"
+          }
+        },
+        {
+          "client_id": "763306789736-9e3e7iumrht4mp0aafrpmesg64pakmoh.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,7 +35,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "763306789736-bm2qtktqqlsif1d3t8ad58rt968nj2c3.apps.googleusercontent.com",
+              "client_id": "763306789736-9e3e7iumrht4mp0aafrpmesg64pakmoh.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

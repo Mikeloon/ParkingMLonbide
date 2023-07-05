@@ -2,10 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout"
+    android:id="@+id/profileFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
     tools:context=".NavFragments.ProfileFragment">
 
     <TextView
@@ -15,7 +14,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="232dp"
         android:text="Correo electrónico:"
-        android:textColor="#FFFFFF"
+        android:textColor="#607D8B"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,7 +25,7 @@
         android:layout_marginTop="84dp"
         android:text="Perfil"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
+        android:textColor="#607D8B"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/perfilPic" />
@@ -48,31 +47,21 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
         android:text="TextView"
-        android:textColor="#FFFFFF"
+        android:textColor="#607D8B"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lblCorreo" />
 
-    <TextView
-        android:id="@+id/Fechalbl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="36dp"
-        android:text="Fecha de nacimiento:"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Correotxt" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/fechaTxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:text="TextView"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Fechalbl" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/reservasLbl"
@@ -81,9 +70,9 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="36dp"
         android:text="Sus reservas:"
-        android:textColor="#FFFFFF"
+        android:textColor="#607D8B"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fechaTxt" />
+        app:layout_constraintTop_toBottomOf="@+id/Correotxt" />
 
     <TextView
         android:id="@+id/reservastxt"
@@ -92,9 +81,28 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
         android:text="TextView"
-        android:textColor="#FFFFFF"
+        android:textColor="#607D8B"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/reservasLbl" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="374dp"
+        android:layout_height="367dp"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/reservasLbl">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewReservas"
+            android:layout_width="match_parent"
+            android:layout_height="255dp" />
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
